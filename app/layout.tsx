@@ -29,14 +29,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fundi3 — Web3, Enfin Clair.",
+  title: "Fundi3 — Web3, Finally Clear.",
   description:
     "La première plateforme Web3 conçue pour l'Afrique. Apprenez la blockchain, le DeFi et les smart contracts en français et en anglais.",
-  keywords: ["Web3", "blockchain", "Africa", "DeFi", "NFT", "Solana", "education", "Cameroon"],
+  keywords: [
+    "Web3",
+    "blockchain",
+    "Africa",
+    "DeFi",
+    "NFT",
+    "Solana",
+    "education",
+    "Cameroon",
+  ],
   authors: [{ name: "Fundi3" }],
   openGraph: {
     title: "Fundi3 — Web3, Finally Clear.",
-    description: "The first Web3 education platform built for francophone Africa.",
+    description:
+      "The first Web3 education platform built for francophone Africa.",
     type: "website",
     locale: "fr_FR",
     alternateLocale: ["en_US"],
@@ -71,9 +81,7 @@ export default function RootLayout({
         />
         <LanguageProvider>
           <Navbar />
-          <main className="pt-14 md:pt-16">
-            {children}
-          </main>
+          <main className="pt-14 md:pt-16">{children}</main>
           <Footer />
           <Toaster />
         </LanguageProvider>
