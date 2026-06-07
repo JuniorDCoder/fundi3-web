@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { LogoFull } from "@/components/brand/Logo";
-import { t, type Lang } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 
 interface NavLink {
   href: string;
@@ -18,6 +18,8 @@ interface MobileMenuProps {
   navLinks: NavLink[];
   lang: Lang;
   toggleLang: () => void;
+  ctaHref: string;
+  ctaLabel: string;
 }
 
 export function MobileMenu({
@@ -26,6 +28,8 @@ export function MobileMenu({
   navLinks,
   lang,
   toggleLang,
+  ctaHref,
+  ctaLabel,
 }: MobileMenuProps) {
   // Lock body scroll while drawer is open
   useEffect(() => {
@@ -109,12 +113,12 @@ export function MobileMenu({
 
             {/* CTA */}
             <Link
-              href="/auth/signup"
+              href={ctaHref}
               onClick={onClose}
               className="flex items-center justify-center w-full py-4 rounded-xl font-heading font-semibold text-lg transition-opacity active:opacity-80"
               style={{ backgroundColor: "#EF9F27", color: "#0A0F0E" }}
             >
-              {t("nav.getStarted", lang)}
+              {ctaLabel}
             </Link>
           </motion.div>
         </motion.div>

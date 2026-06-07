@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import "@/styles/globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Toaster } from "@/components/ui/Toaster";
+import { LanguageProvider } from "@/hooks/useLanguage";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -56,15 +59,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="dark">
+    <html lang="en" className="dark">
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased bg-dark text-off-white`}
       >
-        <Navbar />
-        <main className="pt-14 md:pt-16">
-          {children}
-        </main>
-        <Footer />
+        <NextTopLoader
+          color="linear-gradient(to right, #0F6E56, #1D9E75, #EF9F27)"
+          height={3}
+          showSpinner={false}
+          shadow="0 0 10px #1D9E75, 0 0 5px #EF9F27"
+        />
+        <LanguageProvider>
+          <Navbar />
+          <main className="pt-14 md:pt-16">
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
+        </LanguageProvider>
       </body>
     </html>
   );

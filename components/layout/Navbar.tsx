@@ -8,6 +8,7 @@ import { Menu } from "lucide-react";
 import { LogoFull } from "@/components/brand/Logo";
 import { MobileMenu } from "./MobileMenu";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuth } from "@/hooks/useAuth";
 import { t } from "@/lib/i18n";
 
 const AUTH_PATHS = ["/auth/signup", "/auth/login", "/auth/verify"];
@@ -16,8 +17,12 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { lang, toggleLang } = useLanguage();
+  const { user } = useAuth();
   const pathname = usePathname();
   const { scrollY } = useScroll();
+
+  const ctaHref = user ? "/dashboard" : "/auth/signup";
+  const ctaLabel = user ? t("nav.dashboard", lang) : t("nav.getStarted", lang);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 10);
@@ -82,11 +87,11 @@ export function Navbar() {
 
               {/* CTA button (desktop only) */}
               <Link
-                href="/auth/signup"
+                href={ctaHref}
                 className="hidden md:flex items-center font-body font-medium text-sm px-4 py-2 rounded-lg transition-opacity hover:opacity-90"
                 style={{ backgroundColor: "#EF9F27", color: "#0A0F0E" }}
               >
-                {t("nav.getStarted", lang)}
+                {ctaLabel}
               </Link>
 
               {/* Hamburger (mobile only) */}
@@ -109,6 +114,8 @@ export function Navbar() {
         navLinks={navLinks}
         lang={lang}
         toggleLang={toggleLang}
+        ctaHref={ctaHref}
+        ctaLabel={ctaLabel}
       />
     </>
   );

@@ -187,3 +187,36 @@
 
 .doc-content tr:last-child td { border-bottom: none; }
 .doc-content table { border: 1px solid #1E2E28; border-radius: 0.75rem; overflow: hidden; }
+
+/* ── Sonner toast theming — Fundi3 brand (dark glass) ─────────────────────
+   Sonner injects its own dark-theme rule with the same specificity at
+   runtime (after this stylesheet loads), so source order would let it win.
+   !important on custom properties forces ours to win the cascade instead. */
+[data-sonner-toaster][data-sonner-theme="dark"] {
+  --normal-bg: rgba(17, 25, 21, 0.92) !important;
+  --normal-border: rgba(255, 255, 255, 0.1) !important;
+  --normal-text: #F5FAF7 !important;
+  --success-bg: rgba(15, 110, 86, 0.16) !important;
+  --success-border: rgba(29, 158, 117, 0.35) !important;
+  --success-text: #9FE1CB !important;
+  --error-bg: rgba(127, 29, 29, 0.22) !important;
+  --error-border: rgba(248, 113, 113, 0.35) !important;
+  --error-text: #FCA5A5 !important;
+  --warning-bg: rgba(99, 56, 6, 0.22) !important;
+  --warning-border: rgba(239, 159, 39, 0.35) !important;
+  --warning-text: #FAC775 !important;
+  --info-bg: rgba(15, 110, 86, 0.16) !important;
+  --info-border: rgba(29, 158, 117, 0.35) !important;
+  --info-text: #9FE1CB !important;
+}
+
+[data-sonner-toast] {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+[data-sonner-toast] [data-title] {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+}
