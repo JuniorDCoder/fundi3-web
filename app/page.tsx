@@ -1,21 +1,23 @@
-import { t } from "@/lib/i18n";
+import { Hero } from "@/components/landing/Hero";
+import { Problem } from "@/components/landing/Problem";
+import { Solution } from "@/components/landing/Solution";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { CoursesPreview } from "@/components/landing/CoursesPreview";
+import { Stats } from "@/components/landing/Stats";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { CallToAction } from "@/components/landing/CallToAction";
 
 export default function Home() {
-  const lang = "fr" as const;
-
   return (
-    <main className="min-h-screen bg-dark flex items-center justify-center">
-      <div className="text-center space-y-4 px-6">
-        <h1 className="font-heading text-5xl font-semibold text-off-white">
-          {t("hero.headline", lang)}
-        </h1>
-        <p className="font-body text-muted text-lg">
-          {t("hero.subheadline", lang)}
-        </p>
-        <p className="font-mono text-sm text-green-400 mt-8">
-          Priority 4 — Landing page coming next
-        </p>
-      </div>
-    </main>
+    <>
+      <Hero />
+      <Problem />
+      <Solution />
+      <HowItWorks />
+      <CoursesPreview />
+      <Stats />
+      <Testimonials />
+      <CallToAction />
+    </>
   );
 }
