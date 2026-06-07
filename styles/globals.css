@@ -90,3 +90,100 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='%23ffffff' stroke-width='0.5' opacity='0.05'/%3E%3C/svg%3E");
   }
 }
+
+/* ── Doc prose styles ────────────────────────────────────────────────────── */
+.doc-content {
+  color: rgba(245, 250, 247, 0.8);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.doc-content p.lead {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgba(245, 250, 247, 0.9);
+  margin-bottom: 1.75rem;
+}
+
+.doc-content h2 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #F5FAF7;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #1E2E28;
+}
+
+.doc-content h3 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #F5FAF7;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.doc-content p {
+  margin-bottom: 1.25rem;
+}
+
+.doc-content ul, .doc-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.doc-content ul { list-style-type: disc; }
+.doc-content ol { list-style-type: decimal; }
+
+.doc-content li {
+  margin-bottom: 0.4rem;
+  color: rgba(245, 250, 247, 0.75);
+}
+
+.doc-content strong {
+  font-weight: 600;
+  color: #F5FAF7;
+}
+
+.doc-content em {
+  font-style: italic;
+  color: rgba(245, 250, 247, 0.9);
+}
+
+.doc-content a {
+  color: #1D9E75;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.doc-content a:hover { color: #0F6E56; }
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.doc-content th {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background-color: #111915;
+  color: rgba(245, 250, 247, 0.6);
+  border-bottom: 1px solid #1E2E28;
+}
+
+.doc-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1E2E28;
+  color: rgba(245, 250, 247, 0.7);
+  vertical-align: top;
+}
+
+.doc-content tr:last-child td { border-bottom: none; }
+.doc-content table { border: 1px solid #1E2E28; border-radius: 0.75rem; overflow: hidden; }
