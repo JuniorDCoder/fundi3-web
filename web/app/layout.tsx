@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import NextTopLoader from "nextjs-toploader";
 import "@/styles/globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+};
+
+export const viewport: Viewport = {
   themeColor: "#0A0F0E",
 };
 
