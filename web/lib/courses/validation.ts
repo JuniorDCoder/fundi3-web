@@ -137,9 +137,9 @@ export function parseCourseTreeInput(body: unknown): ParseResult {
   const modulesRaw = Array.isArray(r.modules) ? r.modules : [];
   const modules: CourseModuleInput[] = [];
   for (let i = 0; i < modulesRaw.length; i++) {
-    const module = parseModule(modulesRaw[i], i);
-    if (!module) return { ok: false, error: "invalid_module" };
-    modules.push(module);
+    const moduleItem = parseModule(modulesRaw[i], i);
+    if (!moduleItem) return { ok: false, error: "invalid_module" };
+    modules.push(moduleItem);
   }
 
   const thumbnailUrl = typeof r.thumbnailUrl === "string" && r.thumbnailUrl.trim() ? r.thumbnailUrl.trim() : null;

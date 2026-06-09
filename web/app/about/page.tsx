@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import {
   Users, Eye, Star, Code2, BookOpen, GraduationCap,
-  Globe, Smartphone, Target, MapPin, ArrowRight,
+  Globe, Smartphone, Target, ArrowRight,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";

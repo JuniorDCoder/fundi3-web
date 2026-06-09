@@ -410,12 +410,12 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       setFormError(t("admin.courses.editor.errorPrice", lang));
       return;
     }
-    for (const module of form.modules) {
-      if (!module.titleEn.trim() || !module.titleFr.trim()) {
+    for (const moduleItem of form.modules) {
+      if (!moduleItem.titleEn.trim() || !moduleItem.titleFr.trim()) {
         setFormError(t("admin.courses.editor.errorModule", lang));
         return;
       }
-      for (const lesson of module.lessons) {
+      for (const lesson of moduleItem.lessons) {
         if (!lesson.titleEn.trim() || !lesson.titleFr.trim()) {
           setFormError(t("admin.courses.editor.errorLesson", lang));
           return;
@@ -446,12 +446,12 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       outcomesEn: splitLines(form.outcomesEnText),
       outcomesFr: splitLines(form.outcomesFrText),
       position: course?.position ?? 0,
-      modules: form.modules.map((module, mi) => ({
-        id: module.id,
-        titleEn: module.titleEn.trim(),
-        titleFr: module.titleFr.trim(),
+      modules: form.modules.map((moduleItem, mi) => ({
+        id: moduleItem.id,
+        titleEn: moduleItem.titleEn.trim(),
+        titleFr: moduleItem.titleFr.trim(),
         position: mi,
-        lessons: module.lessons.map((lesson, li) => ({
+        lessons: moduleItem.lessons.map((lesson, li) => ({
           id: lesson.id,
           titleEn: lesson.titleEn.trim(),
           titleFr: lesson.titleFr.trim(),

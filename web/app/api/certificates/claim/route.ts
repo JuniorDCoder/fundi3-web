@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  let displayName = profileRow?.display_name ?? displayNameInput ?? "";
+  const displayName = profileRow?.display_name ?? displayNameInput ?? "";
   if (displayName.length < 2) {
     return NextResponse.json({ error: "display_name_required" }, { status: 400 });
   }

@@ -8,6 +8,9 @@
   --surface: #111915;
   --border: #1E2E28;
   --muted: #4A6358;
+  --font-space-grotesk: "Space Grotesk";
+  --font-inter: "Inter";
+  --font-jetbrains-mono: "JetBrains Mono";
 
   /* Brand colors */
   --primary: #0F6E56;
