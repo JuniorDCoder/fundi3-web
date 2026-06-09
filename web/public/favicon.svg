@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" fill="none">
+  <!-- F top bar -->
+  <rect x="0" y="4" width="24" height="8" rx="1.5" fill="#0F6E56"/>
+  <!-- F middle stroke -->
+  <rect x="0" y="18" width="16" height="8" rx="1.5" fill="#0F6E56"/>
+  <!-- 3 top bar -->
+  <rect x="30" y="4" width="14" height="8" rx="1.5" fill="#0F6E56"/>
+  <!-- 3 middle bar -->
+  <rect x="30" y="18" width="14" height="8" rx="1.5" fill="#0F6E56"/>
+  <!-- Shared bottom bar: F stem + 3 bottom -->
+  <rect x="0" y="32" width="44" height="8" rx="1.5" fill="#0F6E56"/>
+</svg>

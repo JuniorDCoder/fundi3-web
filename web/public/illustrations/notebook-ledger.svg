@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none" role="img" aria-label="Three identical notebook copies stacked side by side, each showing the same matching entries">
+  <rect width="800" height="450" fill="#0A0F0E"/>
+
+  <!-- back copy -->
+  <g transform="translate(150,70)" opacity="0.45">
+    <rect x="0" y="0" width="220" height="300" rx="14" fill="#111915" stroke="#1E2E28" stroke-width="2"/>
+    <rect x="0" y="0" width="14" height="300" rx="7" fill="#0F6E56"/>
+    <g stroke="#4A6358" stroke-width="3" stroke-linecap="round">
+      <line x1="40" y1="60" x2="190" y2="60"/>
+      <line x1="40" y1="100" x2="190" y2="100"/>
+      <line x1="40" y1="140" x2="190" y2="140"/>
+      <line x1="40" y1="180" x2="160" y2="180"/>
+    </g>
+  </g>
+
+  <!-- middle copy -->
+  <g transform="translate(290,40)" opacity="0.7">
+    <rect x="0" y="0" width="220" height="300" rx="14" fill="#111915" stroke="#1E2E28" stroke-width="2"/>
+    <rect x="0" y="0" width="14" height="300" rx="7" fill="#0F6E56"/>
+    <g stroke="#9FE1CB" stroke-width="3" stroke-linecap="round">
+      <line x1="40" y1="60" x2="190" y2="60"/>
+      <line x1="40" y1="100" x2="190" y2="100"/>
+      <line x1="40" y1="140" x2="190" y2="140"/>
+      <line x1="40" y1="180" x2="160" y2="180"/>
+    </g>
+  </g>
+
+  <!-- front copy, highlighted as "yours" -->
+  <g transform="translate(430,80)">
+    <rect x="0" y="0" width="220" height="300" rx="14" fill="#111915" stroke="#1D9E75" stroke-width="2.5"/>
+    <rect x="0" y="0" width="14" height="300" rx="7" fill="#1D9E75"/>
+    <g stroke="#F5FAF7" stroke-width="3" stroke-linecap="round">
+      <line x1="40" y1="60" x2="190" y2="60"/>
+      <line x1="40" y1="100" x2="190" y2="100"/>
+      <line x1="40" y1="140" x2="190" y2="140"/>
+      <line x1="40" y1="180" x2="160" y2="180"/>
+    </g>
+    <!-- match badge -->
+    <circle cx="190" cy="40" r="18" fill="#1D9E75"/>
+    <path d="M182 40l5 5 11-11" stroke="#04342C" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- connecting "identical" arcs between copies -->
+  <g stroke="#EF9F27" stroke-width="2" stroke-dasharray="6 6" opacity="0.6" fill="none">
+    <path d="M384 130 C 410 100, 430 100, 446 120"/>
+    <path d="M244 165 C 270 135, 290 135, 306 155"/>
+  </g>
+</svg>

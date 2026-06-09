@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none" role="img" aria-label="Six members arranged in a circle, each connected by a line to a shared pot in the center">
+  <defs>
+    <radialGradient id="potGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EF9F27" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#EF9F27" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="memberFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1D9E75"/>
+      <stop offset="100%" stop-color="#0F6E56"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="#0A0F0E"/>
+  <rect width="800" height="450" fill="url(#potGlow)" opacity="0.25"/>
+
+  <!-- connecting spokes (drawn first, beneath everything) -->
+  <g stroke="#1E2E28" stroke-width="2">
+    <line x1="400" y1="225" x2="400" y2="100"/>
+    <line x1="400" y1="225" x2="540" y2="148"/>
+    <line x1="400" y1="225" x2="540" y2="302"/>
+    <line x1="400" y1="225" x2="400" y2="350"/>
+    <line x1="400" y1="225" x2="260" y2="302"/>
+    <line x1="400" y1="225" x2="260" y2="148"/>
+  </g>
+
+  <!-- contribution dots flowing toward the pot -->
+  <g fill="#EF9F27">
+    <circle cx="400" cy="150" r="5"/>
+    <circle cx="478" cy="178" r="5"/>
+    <circle cx="478" cy="272" r="5"/>
+    <circle cx="400" cy="305" r="5"/>
+    <circle cx="322" cy="272" r="5"/>
+    <circle cx="322" cy="178" r="5"/>
+  </g>
+
+  <!-- shared pot, center -->
+  <circle cx="400" cy="225" r="46" fill="url(#potGlow)"/>
+  <circle cx="400" cy="225" r="34" fill="#111915" stroke="#EF9F27" stroke-width="2.5"/>
+  <text x="400" y="233" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" fill="#FAC775">⟳</text>
+
+  <!-- six members around the ring -->
+  <g>
+    <!-- top -->
+    <circle cx="400" cy="86" r="26" fill="url(#memberFill)"/>
+    <circle cx="400" cy="79" r="7" fill="#9FE1CB"/>
+    <path d="M387 98c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- upper right -->
+    <circle cx="556" cy="138" r="26" fill="url(#memberFill)"/>
+    <circle cx="556" cy="131" r="7" fill="#9FE1CB"/>
+    <path d="M543 150c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- lower right -->
+    <circle cx="556" cy="312" r="26" fill="url(#memberFill)"/>
+    <circle cx="556" cy="305" r="7" fill="#9FE1CB"/>
+    <path d="M543 324c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- bottom -->
+    <circle cx="400" cy="364" r="26" fill="url(#memberFill)"/>
+    <circle cx="400" cy="357" r="7" fill="#9FE1CB"/>
+    <path d="M387 376c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- lower left -->
+    <circle cx="244" cy="312" r="26" fill="url(#memberFill)"/>
+    <circle cx="244" cy="305" r="7" fill="#9FE1CB"/>
+    <path d="M231 324c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- upper left -->
+    <circle cx="244" cy="138" r="26" fill="url(#memberFill)"/>
+    <circle cx="244" cy="131" r="7" fill="#9FE1CB"/>
+    <path d="M231 150c0-8 6-12 13-12s13 4 13 12" stroke="#9FE1CB" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
