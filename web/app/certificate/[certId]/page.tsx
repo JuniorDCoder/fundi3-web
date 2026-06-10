@@ -4,6 +4,7 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import { ExternalLink, Award, Shield, CheckCircle2 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { CertificateActions } from "@/components/certificates/CertificateActions";
 
 interface Props {
   params: { certId: string };
@@ -41,8 +42,8 @@ export default async function CertificatePage({ params }: Props) {
 
   const qrDataUrl = await QRCode.toDataURL(certUrl, {
     width: 160,
-    margin: 2,
-    color: { dark: "#0F6E56", light: "#111915" },
+    margin: 1,
+    color: { dark: "#0A0F0E", light: "#FFFFFF" },
   });
 
   const issuedDate = new Intl.DateTimeFormat("en-GB", {
@@ -116,7 +117,9 @@ export default async function CertificatePage({ params }: Props) {
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <Image src={qrDataUrl} alt="QR code" width={100} height={100} style={{ borderRadius: 8 }} />
+            <div style={{ display: "inline-block", padding: 8, borderRadius: 12, background: "#FFFFFF" }}>
+              <Image src={qrDataUrl} alt="QR code" width={100} height={100} />
+            </div>
             <div style={{ fontSize: 10, color: "#4A6358", marginTop: 4 }}>Scan to verify</div>
           </div>
         </div>
@@ -132,6 +135,12 @@ export default async function CertificatePage({ params }: Props) {
         <Link href="/courses" style={{ fontSize: 14, color: "#4A6358", textDecoration: "none", padding: "10px 20px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)" }}>
           ← All Courses
         </Link>
+        <CertificateActions
+          certId={cert.id}
+          certUrl={certUrl}
+          shareTitle={`${cert.display_name} — Fundi3 Certificate`}
+          shareText={`${cert.display_name} completed "${course?.title_en ?? "a Web3 course"}" on Fundi3. Verify it here:`}
+        />
         {explorerUrl && (
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: "#F5FAF7", textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: "#0F6E56", display: "inline-flex", alignItems: "center", gap: 6 }}>
             <CheckCircle2 size={14} />

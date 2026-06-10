@@ -20,6 +20,7 @@ import { useCourseProgress } from "@/hooks/useCourseProgress";
 import { CurriculumTree } from "./CurriculumTree";
 import { NotesPanel } from "./NotesPanel";
 import { CertClaimSection } from "./CertClaimSection";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { t } from "@/lib/i18n";
 import type { LocalizedCourse, LocalizedLesson } from "@/lib/courses/types";
 
@@ -39,7 +40,7 @@ const LESSON_TYPE_KEYS: Record<string, string> = {
 export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   const { lang } = useLanguage();
   const { user } = useAuth();
-  const { summary, isCompleted, setLessonStatus, ensureEnrolled } = useCourseProgress(course.slug);
+  const { summary, loading, isCompleted, setLessonStatus, ensureEnrolled } = useCourseProgress(course.slug);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -82,7 +83,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   // near its end, treat the lesson as read and mark it complete automatically.
   useEffect(() => {
     const node = sentinelRef.current;
-    if (!node || done) return;
+    if (!node || done || loading) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -95,7 +96,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [lesson.id, done, completeLesson]);
+  }, [lesson.id, done, loading, completeLesson]);
 
   async function toggleComplete() {
     if (done) {
@@ -170,18 +171,22 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
             </div>
           )}
 
-          <button
-            onClick={toggleComplete}
-            className="inline-flex items-center gap-2 font-body font-medium text-sm px-4 py-2 rounded-xl border transition-colors shrink-0"
-            style={
-              done
-                ? { backgroundColor: "rgba(15,110,86,0.16)", borderColor: "rgba(29,158,117,0.4)", color: "#9FE1CB" }
-                : { backgroundColor: "#0F6E56", borderColor: "#0F6E56", color: "#F5FAF7" }
-            }
-          >
-            <CheckCircle2 size={16} />
-            <span className="hidden sm:inline">{done ? t("learn.completed", lang) : t("learn.markComplete", lang)}</span>
-          </button>
+          {loading && !summary ? (
+            <Skeleton className="h-9 w-32 rounded-xl shrink-0" />
+          ) : (
+            <button
+              onClick={toggleComplete}
+              className="inline-flex items-center gap-2 font-body font-medium text-sm px-4 py-2 rounded-xl border transition-colors shrink-0"
+              style={
+                done
+                  ? { backgroundColor: "rgba(15,110,86,0.16)", borderColor: "rgba(29,158,117,0.4)", color: "#9FE1CB" }
+                  : { backgroundColor: "#0F6E56", borderColor: "#0F6E56", color: "#F5FAF7" }
+              }
+            >
+              <CheckCircle2 size={16} />
+              <span className="hidden sm:inline">{done ? t("learn.completed", lang) : t("learn.markComplete", lang)}</span>
+            </button>
+          )}
         </div>
       </header>
 

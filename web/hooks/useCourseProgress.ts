@@ -10,6 +10,32 @@ interface ProgressResponse {
   summary: CourseProgressSummary;
 }
 
+const PROGRESS_CACHE_PREFIX = "fundi3:courseProgress:";
+
+function progressCacheKey(userId: string, courseSlug: string): string {
+  return `${PROGRESS_CACHE_PREFIX}${userId}:${courseSlug}`;
+}
+
+/** Stale-while-revalidate read — lets a returning learner see correct progress instantly, before the network responds. */
+function readProgressCache(userId: string, courseSlug: string): ProgressResponse | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(progressCacheKey(userId, courseSlug));
+    return raw ? (JSON.parse(raw) as ProgressResponse) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeProgressCache(userId: string, courseSlug: string, data: ProgressResponse): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(progressCacheKey(userId, courseSlug), JSON.stringify(data));
+  } catch {
+    // ignore quota / privacy-mode errors
+  }
+}
+
 interface UseCourseProgressResult {
   enrollment: DbCourseEnrollment | null;
   summary: CourseProgressSummary | null;
@@ -70,7 +96,15 @@ export function useCourseProgress(courseSlug: string): UseCourseProgressResult {
     }
 
     let cancelled = false;
-    setLoading(true);
+
+    const cached = readProgressCache(user.id, courseSlug);
+    if (cached) {
+      setEnrollment(cached.enrollment);
+      setSummary(cached.summary);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
 
     fetch(`/api/courses/${encodeURIComponent(courseSlug)}/progress?lang=${lang}`)
       .then((res) => (res.ok ? (res.json() as Promise<ProgressResponse>) : null))
@@ -78,6 +112,7 @@ export function useCourseProgress(courseSlug: string): UseCourseProgressResult {
         if (cancelled || !json) return;
         setEnrollment(json.enrollment);
         setSummary(json.summary);
+        writeProgressCache(user.id, courseSlug, json);
       })
       .catch(() => {})
       .finally(() => {

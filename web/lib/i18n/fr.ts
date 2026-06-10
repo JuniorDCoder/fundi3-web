@@ -536,6 +536,9 @@ export const fr: Record<string, string> = {
   "cert.nameLabel": "Nom complet",
   "cert.nameError": "Le nom doit contenir au moins 2 caractères",
   "cert.nameErrorSave": "Impossible d'enregistrer le nom — veuillez réessayer",
+  "cert.downloadPdf": "Télécharger le PDF",
+  "cert.share": "Partager",
+  "cert.linkCopied": "Lien copié !",
 
   // Common
   "common.retry": "Réessayer",

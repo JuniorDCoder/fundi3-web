@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Award, ArrowLeft, ExternalLink, ChevronRight } from "lucide-react";
+import { Award, ArrowLeft, ExternalLink, ChevronRight, Download } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
-import { t } from "@/lib/i18n";
+import { t, type Lang } from "@/lib/i18n";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 interface CertItem {
@@ -115,7 +115,7 @@ export default function CertificatesPage() {
   );
 }
 
-function CertRow({ cert, delay, lang }: { cert: CertItem; delay: number; lang: string }) {
+function CertRow({ cert, delay, lang }: { cert: CertItem; delay: number; lang: Lang }) {
   const courseName = lang === "fr" ? cert.courseNameFr || cert.courseNameEn : cert.courseNameEn;
   const issued = new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
@@ -160,6 +160,15 @@ function CertRow({ cert, delay, lang }: { cert: CertItem; delay: number; lang: s
         >
           View
         </Link>
+        <a
+          href={`/api/certificates/${cert.id}/pdf?download=1${lang === "fr" ? "&lang=fr" : ""}`}
+          download
+          className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg transition-colors"
+          style={{ backgroundColor: "rgba(239,159,39,0.14)", color: "#EF9F27" }}
+        >
+          <Download size={12} />
+          {t("cert.downloadPdf", lang)}
+        </a>
         {cert.solanaExplorerUrl && (
           <a
             href={cert.solanaExplorerUrl}
