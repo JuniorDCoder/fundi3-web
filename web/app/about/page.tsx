@@ -4,8 +4,16 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import {
-  Users, Eye, Star, Code2, BookOpen, GraduationCap,
-  Globe, Smartphone, Target, MapPin, ArrowRight,
+  Users,
+  Eye,
+  Star,
+  Code2,
+  BookOpen,
+  GraduationCap,
+  Globe,
+  Smartphone,
+  Target,
+  ArrowRight,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";
@@ -56,7 +64,9 @@ function HeroSection({ lang }: { lang: "en" | "fr" }) {
     <section className="relative pt-32 pb-24 overflow-hidden">
       <div
         className="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none"
-        style={{ background: "radial-gradient(circle, #0F6E56, transparent 65%)" }}
+        style={{
+          background: "radial-gradient(circle, #0F6E56, transparent 65%)",
+        }}
       />
       <div className="absolute inset-0 bg-grid pointer-events-none" />
 
@@ -78,7 +88,10 @@ function HeroSection({ lang }: { lang: "en" | "fr" }) {
             {t("about.headline", lang)}
           </h1>
 
-          <p className="font-body text-xl leading-relaxed max-w-2xl" style={{ color: "#4A6358" }}>
+          <p
+            className="font-body text-xl leading-relaxed max-w-2xl"
+            style={{ color: "#4A6358" }}
+          >
             {t("about.subheadline", lang)}
           </p>
 
@@ -90,7 +103,10 @@ function HeroSection({ lang }: { lang: "en" | "fr" }) {
               className="w-8 h-1 rounded-full"
               style={{ backgroundColor: "#0F6E56" }}
             />
-            <p className="font-body text-base leading-relaxed" style={{ color: "rgba(245,250,247,0.8)" }}>
+            <p
+              className="font-body text-base leading-relaxed"
+              style={{ color: "rgba(245,250,247,0.8)" }}
+            >
               {t("about.story", lang)}
             </p>
           </div>
@@ -103,9 +119,21 @@ function HeroSection({ lang }: { lang: "en" | "fr" }) {
 // ─── Mission pillars ──────────────────────────────────────────────────────────
 
 const PILLARS = [
-  { icon: Globe,      titleKey: "about.pillar1.title", descKey: "about.pillar1.desc" },
-  { icon: Smartphone, titleKey: "about.pillar2.title", descKey: "about.pillar2.desc" },
-  { icon: Target,     titleKey: "about.pillar3.title", descKey: "about.pillar3.desc" },
+  {
+    icon: Globe,
+    titleKey: "about.pillar1.title",
+    descKey: "about.pillar1.desc",
+  },
+  {
+    icon: Smartphone,
+    titleKey: "about.pillar2.title",
+    descKey: "about.pillar2.desc",
+  },
+  {
+    icon: Target,
+    titleKey: "about.pillar3.title",
+    descKey: "about.pillar3.desc",
+  },
 ] as const;
 
 function MissionSection({ lang }: { lang: "en" | "fr" }) {
@@ -140,7 +168,10 @@ function MissionSection({ lang }: { lang: "en" | "fr" }) {
               <h3 className="font-heading font-semibold text-lg">
                 {t(titleKey, lang)}
               </h3>
-              <p className="font-body text-sm leading-relaxed" style={{ color: "#4A6358" }}>
+              <p
+                className="font-body text-sm leading-relaxed"
+                style={{ color: "#4A6358" }}
+              >
                 {t(descKey, lang)}
               </p>
             </motion.div>
@@ -169,7 +200,9 @@ function ProblemStatSection({ lang }: { lang: "en" | "fr" }) {
               className="font-mono text-xs tracking-widest uppercase"
               style={{ color: "#EF9F27" }}
             >
-              {lang === "fr" ? "Le problème qu'on résout" : "The problem we solve"}
+              {lang === "fr"
+                ? "Le problème qu'on résout"
+                : "The problem we solve"}
             </span>
 
             <p
@@ -181,24 +214,60 @@ function ProblemStatSection({ lang }: { lang: "en" | "fr" }) {
                 : "Sub-Saharan Africa is the world's third fastest-growing crypto market — yet has almost no local Web3 education infrastructure."}
             </p>
 
-            <p className="font-body text-base leading-relaxed" style={{ color: "#4A6358" }}>
+            <p
+              className="font-body text-base leading-relaxed"
+              style={{ color: "#4A6358" }}
+            >
               {lang === "fr"
                 ? "Des millions de francophones africains veulent apprendre. Les outils pour les enseigner n'existent tout simplement pas encore — pas dans leur langue, pas avec leurs exemples, pas adaptés à leurs réalités. C'est l'écart que Fundi3 comble."
                 : "Millions of African learners want to participate. The tools to teach them simply don't exist yet — not in their language, not with their examples, not adapted to their realities. That's the gap Fundi3 fills."}
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-4 border-t" style={{ borderColor: "#1E2E28" }}>
+            <div
+              className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-4 border-t"
+              style={{ borderColor: "#1E2E28" }}
+            >
               {[
-                { value: "~600M", label: lang === "fr" ? "Francophones en Afrique" : "French speakers in Africa" },
-                { value: "#3", label: lang === "fr" ? "Marché crypto croissant" : "Fastest-growing crypto market" },
-                { value: "<1%", label: lang === "fr" ? "Accès à l'éducation Web3" : "Have access to Web3 education" },
-                { value: "2025", label: lang === "fr" ? "Notre objectif : 10 000 apprenants" : "Goal: 10,000 learners" },
+                {
+                  value: "~600M",
+                  label:
+                    lang === "fr"
+                      ? "Francophones en Afrique"
+                      : "French speakers in Africa",
+                },
+                {
+                  value: "#3",
+                  label:
+                    lang === "fr"
+                      ? "Marché crypto croissant"
+                      : "Fastest-growing crypto market",
+                },
+                {
+                  value: "<1%",
+                  label:
+                    lang === "fr"
+                      ? "Accès à l'éducation Web3"
+                      : "Have access to Web3 education",
+                },
+                {
+                  value: "2025",
+                  label:
+                    lang === "fr"
+                      ? "Notre objectif : 10 000 apprenants"
+                      : "Goal: 10,000 learners",
+                },
               ].map(({ value, label }) => (
                 <div key={label} className="space-y-1">
-                  <p className="font-heading font-semibold text-2xl" style={{ color: "#1D9E75" }}>
+                  <p
+                    className="font-heading font-semibold text-2xl"
+                    style={{ color: "#1D9E75" }}
+                  >
                     {value}
                   </p>
-                  <p className="font-body text-xs leading-snug" style={{ color: "#4A6358" }}>
+                  <p
+                    className="font-body text-xs leading-snug"
+                    style={{ color: "#4A6358" }}
+                  >
                     {label}
                   </p>
                 </div>
@@ -238,7 +307,10 @@ function TeamSection({ lang }: { lang: "en" | "fr" }) {
                   F3
                 </div>
                 <div>
-                  <p className="font-heading font-semibold" style={{ color: "#F5FAF7" }}>
+                  <p
+                    className="font-heading font-semibold"
+                    style={{ color: "#F5FAF7" }}
+                  >
                     {lang === "fr" ? "Fondateur" : "Founder"}
                   </p>
                   <p className="font-mono text-xs" style={{ color: "#4A6358" }}>
@@ -246,7 +318,10 @@ function TeamSection({ lang }: { lang: "en" | "fr" }) {
                   </p>
                 </div>
               </div>
-              <p className="font-body text-sm leading-relaxed" style={{ color: "#4A6358" }}>
+              <p
+                className="font-body text-sm leading-relaxed"
+                style={{ color: "#4A6358" }}
+              >
                 {lang === "fr"
                   ? "Passionné de technologie blockchain depuis 2020. A vécu la frustration d'apprendre le Web3 sans ressources en français. A construit Fundi3 pour que personne d'autre n'ait à traverser ça."
                   : "Passionate about blockchain technology since 2020. Experienced the frustration of learning Web3 without French resources firsthand. Built Fundi3 so nobody else has to go through that."}
@@ -270,10 +345,16 @@ function TeamSection({ lang }: { lang: "en" | "fr" }) {
                 <Users size={20} style={{ color: "#1D9E75" }} />
               </div>
               <div className="flex-1 space-y-2">
-                <p className="font-heading font-semibold" style={{ color: "#F5FAF7" }}>
+                <p
+                  className="font-heading font-semibold"
+                  style={{ color: "#F5FAF7" }}
+                >
                   {t("about.hiring", lang)}
                 </p>
-                <p className="font-body text-sm leading-relaxed" style={{ color: "#4A6358" }}>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: "#4A6358" }}
+                >
                   {t("about.hiring.desc", lang)}
                 </p>
               </div>
@@ -296,11 +377,11 @@ function TeamSection({ lang }: { lang: "en" | "fr" }) {
 // ─── Values ───────────────────────────────────────────────────────────────────
 
 const VALUES = [
-  { icon: Users,       key: "about.value1" },
-  { icon: Eye,         key: "about.value2" },
-  { icon: Star,        key: "about.value3" },
-  { icon: Code2,       key: "about.value4" },
-  { icon: BookOpen,    key: "about.value5" },
+  { icon: Users, key: "about.value1" },
+  { icon: Eye, key: "about.value2" },
+  { icon: Star, key: "about.value3" },
+  { icon: Code2, key: "about.value4" },
+  { icon: BookOpen, key: "about.value5" },
   { icon: GraduationCap, key: "about.value6" },
 ] as const;
 
@@ -328,7 +409,10 @@ function ValuesSection({ lang }: { lang: "en" | "fr" }) {
               style={{ backgroundColor: "#111915", borderColor: "#1E2E28" }}
             >
               <Icon size={18} style={{ color: "#4A6358" }} />
-              <span className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.7)" }}>
+              <span
+                className="font-body font-medium text-sm"
+                style={{ color: "rgba(245,250,247,0.7)" }}
+              >
                 {t(key, lang)}
               </span>
             </motion.div>

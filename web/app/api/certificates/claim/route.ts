@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/supabase/get-user";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { issueCertificateOnChain, deriveStudentPubkey } from "@/lib/certificates/solana";
+import {
+  issueCertificateOnChain,
+  deriveStudentPubkey,
+} from "@/lib/certificates/solana";
 
 // POST /api/certificates/claim
 // Body: { courseId: string, displayName?: string }
@@ -10,14 +13,16 @@ import { issueCertificateOnChain, deriveStudentPubkey } from "@/lib/certificates
 // identity ourselves — no cookie-session dependency for row-level operations.
 export async function POST(request: NextRequest) {
   const user = await getUserFromRequest(request);
-  if (!user) return NextResponse.json({ error: "not_authenticated" }, { status: 401 });
+  if (!user)
+    return NextResponse.json({ error: "not_authenticated" }, { status: 401 });
 
   const body = await request.json().catch(() => null);
   const courseId: string | undefined = body?.courseId;
   const displayNameInput: string | undefined =
     typeof body?.displayName === "string" ? body.displayName.trim() : undefined;
 
-  if (!courseId) return NextResponse.json({ error: "courseId required" }, { status: 400 });
+  if (!courseId)
+    return NextResponse.json({ error: "courseId required" }, { status: 400 });
 
   const admin = createAdminClient();
 
@@ -28,17 +33,26 @@ export async function POST(request: NextRequest) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  let displayName = profileRow?.display_name ?? displayNameInput ?? "";
+  const displayName = profileRow?.display_name ?? displayNameInput ?? "";
   if (displayName.length < 2) {
-    return NextResponse.json({ error: "display_name_required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "display_name_required" },
+      { status: 400 },
+    );
   }
 
   if (!profileRow) {
     const studentPubkey = deriveStudentPubkey(user.id).toBase58();
-    await admin.from("user_profiles").upsert(
-      { user_id: user.id, display_name: displayName, student_pubkey: studentPubkey },
-      { onConflict: "user_id" },
-    );
+    await admin
+      .from("user_profiles")
+      .upsert(
+        {
+          user_id: user.id,
+          display_name: displayName,
+          student_pubkey: studentPubkey,
+        },
+        { onConflict: "user_id" },
+      );
   }
 
   // ── 2. Idempotency — already claimed? ────────────────────────────────────────
@@ -78,17 +92,21 @@ export async function POST(request: NextRequest) {
     .eq("status", "published")
     .maybeSingle();
 
-  if (!courseRow) return NextResponse.json({ error: "course_not_found" }, { status: 404 });
+  if (!courseRow)
+    return NextResponse.json({ error: "course_not_found" }, { status: 404 });
 
-  const totalLessons = (courseRow.course_modules as { course_lessons: unknown[] }[]).reduce(
-    (sum, m) => sum + m.course_lessons.length,
-    0,
-  );
+  const totalLessons = (
+    courseRow.course_modules as { course_lessons: unknown[] }[]
+  ).reduce((sum, m) => sum + m.course_lessons.length, 0);
   const completedLessons = lessonProgressRows?.length ?? 0;
 
   if (totalLessons === 0 || completedLessons < totalLessons) {
     return NextResponse.json(
-      { error: "course_not_completed", completed: completedLessons, total: totalLessons },
+      {
+        error: "course_not_completed",
+        completed: completedLessons,
+        total: totalLessons,
+      },
       { status: 403 },
     );
   }
@@ -98,12 +116,19 @@ export async function POST(request: NextRequest) {
 
   const { data: newCert, error: insertError } = await admin
     .from("certificates")
-    .insert({ user_id: user.id, course_id: courseId, display_name: displayName })
+    .insert({
+      user_id: user.id,
+      course_id: courseId,
+      display_name: displayName,
+    })
     .select("id")
     .single();
 
   if (insertError || !newCert) {
-    return NextResponse.json({ error: "insert_failed", detail: insertError?.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "insert_failed", detail: insertError?.message },
+      { status: 500 },
+    );
   }
 
   const certId: string = newCert.id;
@@ -114,16 +139,27 @@ export async function POST(request: NextRequest) {
   let txSig: string | null = null;
 
   try {
-    const result = await issueCertificateOnChain(user.id, courseId, metadataUri);
+    const result = await issueCertificateOnChain(
+      user.id,
+      courseId,
+      metadataUri,
+    );
     certificatePda = result.certificatePda;
     txSig = result.txSig || null;
 
     await admin
       .from("certificates")
-      .update({ certificate_pda: certificatePda, metadata_uri: metadataUri, solana_tx_sig: txSig })
+      .update({
+        certificate_pda: certificatePda,
+        metadata_uri: metadataUri,
+        solana_tx_sig: txSig,
+      })
       .eq("id", certId);
   } catch (err) {
-    console.error("[cert:mint] on-chain minting failed — cert saved in DB only:", err);
+    console.error(
+      "[cert:mint] on-chain minting failed — cert saved in DB only:",
+      err,
+    );
   }
 
   return NextResponse.json({

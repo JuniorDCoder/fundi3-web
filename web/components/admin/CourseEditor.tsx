@@ -74,7 +74,12 @@ function emptyLesson(): EditorLesson {
 }
 
 function emptyModule(): EditorModule {
-  return { key: nextKey("module"), titleEn: "", titleFr: "", lessons: [emptyLesson()] };
+  return {
+    key: nextKey("module"),
+    titleEn: "",
+    titleFr: "",
+    lessons: [emptyLesson()],
+  };
 }
 
 function fromDbCourse(course: DbCourse): {
@@ -198,10 +203,20 @@ function splitTags(value: string): string[] {
 
 // ─── Shared field primitives ──────────────────────────────────────────────────
 
-function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <label className="block text-xs font-medium text-[#F5FAF7]/80 mb-1.5">{label}</label>
+      <label className="block text-xs font-medium text-[#F5FAF7]/80 mb-1.5">
+        {label}
+      </label>
       {children}
       {hint && <p className="mt-1.5 text-xs text-[#4A6358]">{hint}</p>}
     </div>
@@ -213,14 +228,25 @@ const inputClass =
   "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors";
 
 function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={`${inputClass} ${props.className ?? ""}`} />;
+  return (
+    <input {...props} className={`${inputClass} ${props.className ?? ""}`} />
+  );
 }
 
 function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={`${inputClass} resize-y ${props.className ?? ""}`} />;
+  return (
+    <textarea
+      {...props}
+      className={`${inputClass} resize-y ${props.className ?? ""}`}
+    />
+  );
 }
 
-function Select(props: React.SelectHTMLAttributes<HTMLSelectElement> & { children: React.ReactNode }) {
+function Select(
+  props: React.SelectHTMLAttributes<HTMLSelectElement> & {
+    children: React.ReactNode;
+  },
+) {
   return (
     <select {...props} className={`${inputClass} ${props.className ?? ""}`}>
       {props.children}
@@ -228,7 +254,15 @@ function Select(props: React.SelectHTMLAttributes<HTMLSelectElement> & { childre
   );
 }
 
-function SectionCard({ icon: Icon, title, children }: { icon: typeof Layers; title: string; children: React.ReactNode }) {
+function SectionCard({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof Layers;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 space-y-5">
       <h2 className="font-heading text-lg font-semibold text-[#F5FAF7] flex items-center gap-2">
@@ -281,7 +315,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
   const { lang } = useLanguage();
   const router = useRouter();
 
-  const [form, setForm] = useState(() => (course ? fromDbCourse(course) : emptyForm()));
+  const [form, setForm] = useState(() =>
+    course ? fromDbCourse(course) : emptyForm(),
+  );
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -305,7 +341,10 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
   }
 
   function removeModule(moduleKey: string) {
-    setForm((prev) => ({ ...prev, modules: prev.modules.filter((m) => m.key !== moduleKey) }));
+    setForm((prev) => ({
+      ...prev,
+      modules: prev.modules.filter((m) => m.key !== moduleKey),
+    }));
   }
 
   function moveModule(moduleKey: string, direction: -1 | 1) {
@@ -322,7 +361,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
   function updateModule(moduleKey: string, partial: Partial<EditorModule>) {
     setForm((prev) => ({
       ...prev,
-      modules: prev.modules.map((m) => (m.key === moduleKey ? { ...m, ...partial } : m)),
+      modules: prev.modules.map((m) =>
+        m.key === moduleKey ? { ...m, ...partial } : m,
+      ),
     }));
   }
 
@@ -330,7 +371,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
     setForm((prev) => ({
       ...prev,
       modules: prev.modules.map((m) =>
-        m.key === moduleKey ? { ...m, lessons: [...m.lessons, emptyLesson()] } : m,
+        m.key === moduleKey
+          ? { ...m, lessons: [...m.lessons, emptyLesson()] }
+          : m,
       ),
     }));
   }
@@ -339,7 +382,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
     setForm((prev) => ({
       ...prev,
       modules: prev.modules.map((m) =>
-        m.key === moduleKey ? { ...m, lessons: m.lessons.filter((l) => l.key !== lessonKey) } : m,
+        m.key === moduleKey
+          ? { ...m, lessons: m.lessons.filter((l) => l.key !== lessonKey) }
+          : m,
       ),
     }));
   }
@@ -359,13 +404,22 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
     }));
   }
 
-  function updateLesson(moduleKey: string, lessonKey: string, partial: Partial<EditorLesson>) {
+  function updateLesson(
+    moduleKey: string,
+    lessonKey: string,
+    partial: Partial<EditorLesson>,
+  ) {
     setForm((prev) => ({
       ...prev,
       modules: prev.modules.map((m) =>
         m.key !== moduleKey
           ? m
-          : { ...m, lessons: m.lessons.map((l) => (l.key === lessonKey ? { ...l, ...partial } : l)) },
+          : {
+              ...m,
+              lessons: m.lessons.map((l) =>
+                l.key === lessonKey ? { ...l, ...partial } : l,
+              ),
+            },
       ),
     }));
   }
@@ -406,16 +460,21 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       setFormError(t("admin.courses.editor.errorDescription", lang));
       return;
     }
-    if (!form.isFree && (!form.priceUsd.trim() || Number.isNaN(Number(form.priceUsd)) || Number(form.priceUsd) < 0)) {
+    if (
+      !form.isFree &&
+      (!form.priceUsd.trim() ||
+        Number.isNaN(Number(form.priceUsd)) ||
+        Number(form.priceUsd) < 0)
+    ) {
       setFormError(t("admin.courses.editor.errorPrice", lang));
       return;
     }
-    for (const module of form.modules) {
-      if (!module.titleEn.trim() || !module.titleFr.trim()) {
+    for (const courseModule of form.modules) {
+      if (!courseModule.titleEn.trim() || !courseModule.titleFr.trim()) {
         setFormError(t("admin.courses.editor.errorModule", lang));
         return;
       }
-      for (const lesson of module.lessons) {
+      for (const lesson of courseModule.lessons) {
         if (!lesson.titleEn.trim() || !lesson.titleFr.trim()) {
           setFormError(t("admin.courses.editor.errorLesson", lang));
           return;
@@ -468,19 +527,30 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
 
     setSubmitting(true);
     try {
-      const url = mode === "create" ? "/api/admin/courses" : `/api/admin/courses/${course!.id}`;
+      const url =
+        mode === "create"
+          ? "/api/admin/courses"
+          : `/api/admin/courses/${course!.id}`;
       const method = mode === "create" ? "POST" : "PUT";
-      const res = await authedFetch(url, lang, { method, body: JSON.stringify(payload) });
+      const res = await authedFetch(url, lang, {
+        method,
+        body: JSON.stringify(payload),
+      });
       const json = await res.json();
 
       if (!res.ok) {
-        setFormError((json as ApiError).message ?? t("admin.courses.editor.saveFailed", lang));
+        setFormError(
+          (json as ApiError).message ??
+            t("admin.courses.editor.saveFailed", lang),
+        );
         setSubmitting(false);
         return;
       }
 
       toast.success(
-        mode === "create" ? t("admin.courses.editor.created", lang) : t("admin.courses.editor.saved", lang),
+        mode === "create"
+          ? t("admin.courses.editor.created", lang)
+          : t("admin.courses.editor.saved", lang),
         { icon: <Sparkles size={16} className="text-accent" /> },
       );
       router.push("/admin/courses");
@@ -494,7 +564,10 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl space-y-6 pb-16">
       {/* Basics */}
-      <SectionCard icon={BookOpen} title={t("admin.courses.editor.sectionBasics", lang)}>
+      <SectionCard
+        icon={BookOpen}
+        title={t("admin.courses.editor.sectionBasics", lang)}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label={t("admin.courses.editor.titleEnLabel", lang)}>
             <TextInput
@@ -504,11 +577,18 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
             />
           </Field>
           <Field label={t("admin.courses.editor.titleFrLabel", lang)}>
-            <TextInput required value={form.titleFr} onChange={(e) => patch({ titleFr: e.target.value })} />
+            <TextInput
+              required
+              value={form.titleFr}
+              onChange={(e) => patch({ titleFr: e.target.value })}
+            />
           </Field>
         </div>
 
-        <Field label={t("admin.courses.editor.slugLabel", lang)} hint={t("admin.courses.editor.slugHint", lang)}>
+        <Field
+          label={t("admin.courses.editor.slugLabel", lang)}
+          hint={t("admin.courses.editor.slugHint", lang)}
+        >
           <TextInput
             required
             value={form.slug}
@@ -558,10 +638,16 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       </SectionCard>
 
       {/* Classification + pricing */}
-      <SectionCard icon={Sparkles} title={t("admin.courses.editor.sectionClassification", lang)}>
+      <SectionCard
+        icon={Sparkles}
+        title={t("admin.courses.editor.sectionClassification", lang)}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Field label={t("admin.courses.editor.levelLabel", lang)}>
-            <Select value={form.level} onChange={(e) => patch({ level: e.target.value as CourseLevel })}>
+            <Select
+              value={form.level}
+              onChange={(e) => patch({ level: e.target.value as CourseLevel })}
+            >
               {COURSE_LEVELS.map((level) => (
                 <option key={level} value={level} className="bg-surface">
                   {t(levelBadgeKey(level), lang)}
@@ -572,7 +658,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
           <Field label={t("admin.courses.editor.languageLabel", lang)}>
             <Select
               value={form.language}
-              onChange={(e) => patch({ language: e.target.value as CourseLanguageMode })}
+              onChange={(e) =>
+                patch({ language: e.target.value as CourseLanguageMode })
+              }
             >
               {COURSE_LANGUAGE_MODES.map((mode) => (
                 <option key={mode} value={mode} className="bg-surface">
@@ -582,7 +670,12 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
             </Select>
           </Field>
           <Field label={t("admin.courses.editor.statusLabel", lang)}>
-            <Select value={form.status} onChange={(e) => patch({ status: e.target.value as CourseStatus })}>
+            <Select
+              value={form.status}
+              onChange={(e) =>
+                patch({ status: e.target.value as CourseStatus })
+              }
+            >
               {COURSE_STATUSES.map((status) => (
                 <option key={status} value={status} className="bg-surface">
                   {t(`admin.courses.status.${status}`, lang)}
@@ -599,7 +692,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
             onChange={(e) => patch({ isAfrican: e.target.checked })}
             className="w-4 h-4 rounded border-white/20 bg-white/5 accent-[#EF9F27]"
           />
-          <span className="text-sm text-[#F5FAF7]/80">{t("admin.courses.editor.africanLabel", lang)}</span>
+          <span className="text-sm text-[#F5FAF7]/80">
+            {t("admin.courses.editor.africanLabel", lang)}
+          </span>
         </label>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
@@ -607,10 +702,17 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
             <input
               type="checkbox"
               checked={form.isFree}
-              onChange={(e) => patch({ isFree: e.target.checked, priceUsd: e.target.checked ? "" : form.priceUsd })}
+              onChange={(e) =>
+                patch({
+                  isFree: e.target.checked,
+                  priceUsd: e.target.checked ? "" : form.priceUsd,
+                })
+              }
               className="w-4 h-4 rounded border-white/20 bg-white/5 accent-[#1D9E75]"
             />
-            <span className="text-sm text-[#F5FAF7]/80">{t("admin.courses.editor.freeLabel", lang)}</span>
+            <span className="text-sm text-[#F5FAF7]/80">
+              {t("admin.courses.editor.freeLabel", lang)}
+            </span>
           </label>
 
           {!form.isFree && (
@@ -636,7 +738,10 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       </SectionCard>
 
       {/* Display */}
-      <SectionCard icon={Layers} title={t("admin.courses.editor.sectionDisplay", lang)}>
+      <SectionCard
+        icon={Layers}
+        title={t("admin.courses.editor.sectionDisplay", lang)}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label={t("admin.courses.editor.gradientFromLabel", lang)}>
             <div className="flex items-center gap-2">
@@ -672,7 +777,9 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
 
         <div
           className="h-20 rounded-xl border border-white/10"
-          style={{ background: `linear-gradient(135deg, ${form.gradientFrom}, ${form.gradientTo})` }}
+          style={{
+            background: `linear-gradient(135deg, ${form.gradientFrom}, ${form.gradientTo})`,
+          }}
         />
 
         <Field label={t("admin.courses.editor.thumbnailLabel", lang)}>
@@ -684,14 +791,25 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
           />
         </Field>
 
-        <Field label={t("admin.courses.editor.tagsLabel", lang)} hint={t("admin.courses.editor.tagsHint", lang)}>
-          <TextInput value={form.tagsText} onChange={(e) => patch({ tagsText: e.target.value })} />
+        <Field
+          label={t("admin.courses.editor.tagsLabel", lang)}
+          hint={t("admin.courses.editor.tagsHint", lang)}
+        >
+          <TextInput
+            value={form.tagsText}
+            onChange={(e) => patch({ tagsText: e.target.value })}
+          />
         </Field>
       </SectionCard>
 
       {/* Outcomes */}
-      <SectionCard icon={Sparkles} title={t("admin.courses.editor.sectionOutcomes", lang)}>
-        <p className="text-xs text-[#4A6358] -mt-2">{t("admin.courses.editor.outcomesHint", lang)}</p>
+      <SectionCard
+        icon={Sparkles}
+        title={t("admin.courses.editor.sectionOutcomes", lang)}
+      >
+        <p className="text-xs text-[#4A6358] -mt-2">
+          {t("admin.courses.editor.outcomesHint", lang)}
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label={t("admin.courses.editor.outcomesEnLabel", lang)}>
             <TextArea
@@ -711,10 +829,16 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       </SectionCard>
 
       {/* Curriculum */}
-      <SectionCard icon={Layers} title={t("admin.courses.editor.sectionCurriculum", lang)}>
+      <SectionCard
+        icon={Layers}
+        title={t("admin.courses.editor.sectionCurriculum", lang)}
+      >
         <div className="space-y-5">
           {form.modules.map((module, mi) => (
-            <div key={module.key} className="rounded-xl border border-white/10 overflow-hidden">
+            <div
+              key={module.key}
+              className="rounded-xl border border-white/10 overflow-hidden"
+            >
               <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] border-b border-white/10">
                 <span className="font-mono text-xs font-medium w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-primary/15 text-[#9FE1CB]">
                   {mi + 1}
@@ -723,19 +847,31 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                   <TextInput
                     placeholder={t("admin.courses.editor.moduleTitleEn", lang)}
                     value={module.titleEn}
-                    onChange={(e) => updateModule(module.key, { titleEn: e.target.value })}
+                    onChange={(e) =>
+                      updateModule(module.key, { titleEn: e.target.value })
+                    }
                   />
                   <TextInput
                     placeholder={t("admin.courses.editor.moduleTitleFr", lang)}
                     value={module.titleFr}
-                    onChange={(e) => updateModule(module.key, { titleFr: e.target.value })}
+                    onChange={(e) =>
+                      updateModule(module.key, { titleFr: e.target.value })
+                    }
                   />
                 </div>
                 <div className="flex items-center gap-0.5 shrink-0">
-                  <IconButton onClick={() => moveModule(module.key, -1)} disabled={mi === 0} title={t("admin.courses.editor.moveUp", lang)}>
+                  <IconButton
+                    onClick={() => moveModule(module.key, -1)}
+                    disabled={mi === 0}
+                    title={t("admin.courses.editor.moveUp", lang)}
+                  >
                     <ChevronUp size={15} />
                   </IconButton>
-                  <IconButton onClick={() => moveModule(module.key, 1)} disabled={mi === form.modules.length - 1} title={t("admin.courses.editor.moveDown", lang)}>
+                  <IconButton
+                    onClick={() => moveModule(module.key, 1)}
+                    disabled={mi === form.modules.length - 1}
+                    title={t("admin.courses.editor.moveDown", lang)}
+                  >
                     <ChevronDown size={15} />
                   </IconButton>
                   <IconButton
@@ -754,25 +890,48 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                   <div key={lesson.key} className="p-4 space-y-3">
                     <div className="flex items-start gap-3">
                       <span className="font-mono text-xs text-[#4A6358] mt-2.5 shrink-0">
-                        {String(mi + 1).padStart(2, "0")}.{String(li + 1).padStart(2, "0")}
+                        {String(mi + 1).padStart(2, "0")}.
+                        {String(li + 1).padStart(2, "0")}
                       </span>
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <TextInput
-                          placeholder={t("admin.courses.editor.lessonTitleEn", lang)}
+                          placeholder={t(
+                            "admin.courses.editor.lessonTitleEn",
+                            lang,
+                          )}
                           value={lesson.titleEn}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { titleEn: e.target.value })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              titleEn: e.target.value,
+                            })
+                          }
                         />
                         <TextInput
-                          placeholder={t("admin.courses.editor.lessonTitleFr", lang)}
+                          placeholder={t(
+                            "admin.courses.editor.lessonTitleFr",
+                            lang,
+                          )}
                           value={lesson.titleFr}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { titleFr: e.target.value })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              titleFr: e.target.value,
+                            })
+                          }
                         />
                       </div>
                       <div className="flex items-center gap-0.5 shrink-0">
-                        <IconButton onClick={() => moveLesson(module.key, lesson.key, -1)} disabled={li === 0} title={t("admin.courses.editor.moveUp", lang)}>
+                        <IconButton
+                          onClick={() => moveLesson(module.key, lesson.key, -1)}
+                          disabled={li === 0}
+                          title={t("admin.courses.editor.moveUp", lang)}
+                        >
                           <ChevronUp size={14} />
                         </IconButton>
-                        <IconButton onClick={() => moveLesson(module.key, lesson.key, 1)} disabled={li === module.lessons.length - 1} title={t("admin.courses.editor.moveDown", lang)}>
+                        <IconButton
+                          onClick={() => moveLesson(module.key, lesson.key, 1)}
+                          disabled={li === module.lessons.length - 1}
+                          title={t("admin.courses.editor.moveDown", lang)}
+                        >
                           <ChevronDown size={14} />
                         </IconButton>
                         <IconButton
@@ -790,50 +949,82 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                       <Field label={t("admin.courses.editor.lessonType", lang)}>
                         <Select
                           value={lesson.lessonType}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { lessonType: e.target.value as LessonType })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              lessonType: e.target.value as LessonType,
+                            })
+                          }
                         >
                           {LESSON_TYPES.map((type) => (
-                            <option key={type} value={type} className="bg-surface">
+                            <option
+                              key={type}
+                              value={type}
+                              className="bg-surface"
+                            >
                               {lessonTypeLabels[type]}
                             </option>
                           ))}
                         </Select>
                       </Field>
-                      <Field label={t("admin.courses.editor.lessonDuration", lang)}>
+                      <Field
+                        label={t("admin.courses.editor.lessonDuration", lang)}
+                      >
                         <TextInput
                           placeholder="10 min"
                           value={lesson.durationLabel}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { durationLabel: e.target.value })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              durationLabel: e.target.value,
+                            })
+                          }
                         />
                       </Field>
                     </div>
 
                     {lesson.lessonType === "video" && (
                       <div className="pl-7">
-                        <Field label={t("admin.courses.editor.lessonVideoUrl", lang)}>
+                        <Field
+                          label={t("admin.courses.editor.lessonVideoUrl", lang)}
+                        >
                           <TextInput
                             type="url"
                             placeholder="https://…"
                             value={lesson.videoUrl}
-                            onChange={(e) => updateLesson(module.key, lesson.key, { videoUrl: e.target.value })}
+                            onChange={(e) =>
+                              updateLesson(module.key, lesson.key, {
+                                videoUrl: e.target.value,
+                              })
+                            }
                           />
                         </Field>
                       </div>
                     )}
 
                     <div className="pl-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <Field label={t("admin.courses.editor.lessonContentEn", lang)}>
+                      <Field
+                        label={t("admin.courses.editor.lessonContentEn", lang)}
+                      >
                         <TextArea
                           rows={3}
                           value={lesson.contentEn}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { contentEn: e.target.value })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              contentEn: e.target.value,
+                            })
+                          }
                         />
                       </Field>
-                      <Field label={t("admin.courses.editor.lessonContentFr", lang)}>
+                      <Field
+                        label={t("admin.courses.editor.lessonContentFr", lang)}
+                      >
                         <TextArea
                           rows={3}
                           value={lesson.contentFr}
-                          onChange={(e) => updateLesson(module.key, lesson.key, { contentFr: e.target.value })}
+                          onChange={(e) =>
+                            updateLesson(module.key, lesson.key, {
+                              contentFr: e.target.value,
+                            })
+                          }
                         />
                       </Field>
                     </div>

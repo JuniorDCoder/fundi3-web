@@ -15,7 +15,9 @@ import {
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 
-type ParseResult = { ok: true; value: CourseTreeInput } | { ok: false; error: string };
+type ParseResult =
+  | { ok: true; value: CourseTreeInput }
+  | { ok: false; error: string };
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -31,11 +33,20 @@ function asStringArray(value: unknown): string[] | null {
   return value.map((item) => item.trim()).filter(Boolean);
 }
 
-function asEnum<T extends string>(value: unknown, allowed: readonly T[]): T | null {
-  return typeof value === "string" && (allowed as readonly string[]).includes(value) ? (value as T) : null;
+function asEnum<T extends string>(
+  value: unknown,
+  allowed: readonly T[],
+): T | null {
+  return typeof value === "string" &&
+    (allowed as readonly string[]).includes(value)
+    ? (value as T)
+    : null;
 }
 
-function parseLesson(raw: unknown, fallbackPosition: number): CourseLessonInput | null {
+function parseLesson(
+  raw: unknown,
+  fallbackPosition: number,
+): CourseLessonInput | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
 
@@ -44,7 +55,10 @@ function parseLesson(raw: unknown, fallbackPosition: number): CourseLessonInput 
   const lessonType = asEnum<LessonType>(r.lessonType, LESSON_TYPES);
   if (!lessonType) return null;
 
-  const videoUrl = typeof r.videoUrl === "string" && r.videoUrl.trim() ? r.videoUrl.trim() : null;
+  const videoUrl =
+    typeof r.videoUrl === "string" && r.videoUrl.trim()
+      ? r.videoUrl.trim()
+      : null;
 
   return {
     id: typeof r.id === "string" && r.id.trim() ? r.id.trim() : undefined,
@@ -59,7 +73,10 @@ function parseLesson(raw: unknown, fallbackPosition: number): CourseLessonInput 
   };
 }
 
-function parseModule(raw: unknown, fallbackPosition: number): CourseModuleInput | null {
+function parseModule(
+  raw: unknown,
+  fallbackPosition: number,
+): CourseModuleInput | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
 
@@ -102,20 +119,28 @@ export function parseCourseTreeInput(body: unknown): ParseResult {
   if (!isNonEmptyString(r.titleEn) || !isNonEmptyString(r.titleFr)) {
     return { ok: false, error: "missing_title" };
   }
-  if (!isNonEmptyString(r.descriptionEn) || !isNonEmptyString(r.descriptionFr)) {
+  if (
+    !isNonEmptyString(r.descriptionEn) ||
+    !isNonEmptyString(r.descriptionFr)
+  ) {
     return { ok: false, error: "missing_description" };
   }
 
   const level = asEnum<CourseLevel>(r.level, COURSE_LEVELS);
   if (!level) return { ok: false, error: "invalid_level" };
 
-  const language = asEnum<CourseLanguageMode>(r.language, COURSE_LANGUAGE_MODES) ?? "both";
+  const language =
+    asEnum<CourseLanguageMode>(r.language, COURSE_LANGUAGE_MODES) ?? "both";
   const status = asEnum<CourseStatus>(r.status, COURSE_STATUSES) ?? "draft";
 
   const isFree = r.isFree !== false;
   let priceUsd: number | null = null;
   if (!isFree) {
-    if (typeof r.priceUsd !== "number" || !Number.isFinite(r.priceUsd) || r.priceUsd < 0) {
+    if (
+      typeof r.priceUsd !== "number" ||
+      !Number.isFinite(r.priceUsd) ||
+      r.priceUsd < 0
+    ) {
       return { ok: false, error: "invalid_price" };
     }
     priceUsd = Math.round(r.priceUsd * 100) / 100;
@@ -123,7 +148,10 @@ export function parseCourseTreeInput(body: unknown): ParseResult {
 
   const gradientFrom = asString(r.gradientFrom, "#0F6E56").trim();
   const gradientTo = asString(r.gradientTo, "#1D9E75").trim();
-  if (!HEX_COLOR_PATTERN.test(gradientFrom) || !HEX_COLOR_PATTERN.test(gradientTo)) {
+  if (
+    !HEX_COLOR_PATTERN.test(gradientFrom) ||
+    !HEX_COLOR_PATTERN.test(gradientTo)
+  ) {
     return { ok: false, error: "invalid_gradient" };
   }
 
@@ -137,12 +165,15 @@ export function parseCourseTreeInput(body: unknown): ParseResult {
   const modulesRaw = Array.isArray(r.modules) ? r.modules : [];
   const modules: CourseModuleInput[] = [];
   for (let i = 0; i < modulesRaw.length; i++) {
-    const module = parseModule(modulesRaw[i], i);
-    if (!module) return { ok: false, error: "invalid_module" };
-    modules.push(module);
+    const parsedModule = parseModule(modulesRaw[i], i);
+    if (!parsedModule) return { ok: false, error: "invalid_module" };
+    modules.push(parsedModule);
   }
 
-  const thumbnailUrl = typeof r.thumbnailUrl === "string" && r.thumbnailUrl.trim() ? r.thumbnailUrl.trim() : null;
+  const thumbnailUrl =
+    typeof r.thumbnailUrl === "string" && r.thumbnailUrl.trim()
+      ? r.thumbnailUrl.trim()
+      : null;
 
   return {
     ok: true,

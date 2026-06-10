@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
 import "@/styles/globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -8,23 +8,20 @@ import { SiteMain } from "@/components/layout/SiteMain";
 import { Toaster } from "@/components/ui/Toaster";
 import { LanguageProvider } from "@/hooks/useLanguage";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const spaceGrotesk = localFont({
+  src: "./fonts/GeistVF.woff",
   variable: "--font-space-grotesk",
   display: "swap",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const inter = localFont({
+  src: "./fonts/GeistVF.woff",
   variable: "--font-inter",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const jetbrainsMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
