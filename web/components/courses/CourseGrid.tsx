@@ -12,9 +12,10 @@ import {
 interface CourseGridProps {
   courses: LocalizedCourse[];
   inView?: boolean;
+  enrolledCourseIds?: Set<string>;
 }
 
-export function CourseGrid({ courses, inView = true }: CourseGridProps) {
+export function CourseGrid({ courses, inView = true, enrolledCourseIds }: CourseGridProps) {
   const { lang } = useLanguage();
 
   if (courses.length === 0) {
@@ -42,6 +43,7 @@ export function CourseGrid({ courses, inView = true }: CourseGridProps) {
           gradientFrom={course.gradientFrom}
           gradientTo={course.gradientTo}
           isAfricanContext={course.isAfrican}
+          isEnrolled={enrolledCourseIds?.has(course.id)}
           delay={0.06 * i}
           inView={inView}
         />

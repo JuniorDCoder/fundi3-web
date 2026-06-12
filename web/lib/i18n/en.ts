@@ -323,6 +323,30 @@ export const en: Record<string, string> = {
   "dashboard.allCaughtUp": "You've completed every lesson — nicely done!",
   "dashboard.certificates": "My certificates",
   "dashboard.viewAllCerts": "View all",
+  "dashboard.navOverview": "Overview",
+  "dashboard.navCertificates": "Certificates",
+  "dashboard.navProfile": "Profile",
+  "dashboard.navSettings": "Settings",
+
+  // --- Profile ---
+  "profile.title": "Profile",
+  "profile.displayNameLabel": "Name on certificates",
+  "profile.displayNameHint": "This is the name that appears on your NFT certificates.",
+  "profile.email": "Email",
+  "profile.save": "Save changes",
+  "profile.saved": "Profile updated",
+  "profile.saveError": "Couldn't save your profile",
+
+  // --- Settings ---
+  "settings.title": "Settings",
+  "settings.notificationsTitle": "Email notifications",
+  "settings.notifCourseCompleted": "Course completed",
+  "settings.notifCourseCompletedHint": "Get an email when you finish a course.",
+  "settings.notifNewCourse": "New courses",
+  "settings.notifNewCourseHint": "Get an email when a new course is published.",
+  "settings.notifCertificatePdf": "Certificate PDF",
+  "settings.notifCertificatePdfHint": "Email me a PDF copy of my certificate when I earn one.",
+  "settings.saveError": "Couldn't save your preferences",
 
   // --- Learn / Lesson player ---
   "learn.back": "Back to course",

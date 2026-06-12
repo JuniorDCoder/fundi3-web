@@ -19,6 +19,7 @@ export interface CourseCardProps {
   gradientFrom: string;
   gradientTo: string;
   isAfricanContext?: boolean;
+  isEnrolled?: boolean;
   delay?: number;
   inView?: boolean;
 }
@@ -36,10 +37,17 @@ export function CourseCard({
   gradientFrom,
   gradientTo,
   isAfricanContext = false,
+  isEnrolled = false,
   delay = 0,
   inView = true,
 }: CourseCardProps) {
   const { lang } = useLanguage();
+
+  const ctaLabel = isEnrolled
+    ? t("dashboard.continueLearning", lang)
+    : isFree
+      ? t("courses.startFree", lang)
+      : t("courses.viewCourse", lang);
 
   return (
     <motion.div
@@ -103,7 +111,7 @@ export function CourseCard({
               className="flex items-center gap-1 font-body font-medium text-sm transition-colors group-hover:text-primary"
               style={{ color: "#0F6E56" }}
             >
-              {isFree ? t("courses.startFree", lang) : t("courses.viewCourse", lang)}
+              {ctaLabel}
               <ChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>

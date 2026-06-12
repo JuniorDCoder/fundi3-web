@@ -119,136 +119,134 @@ export default function DashboardPage() {
   const allComplete = hasCourses && entries.every((entry) => entry.summary.percentComplete === 100);
 
   return (
-    <div className="min-h-screen bg-dark">
-      <div className="max-w-5xl mx-auto px-4 pt-24 pb-16">
-        {/* Welcome header */}
-        <motion.div
+    <div className="max-w-5xl mx-auto px-4 pb-16">
+      {/* Welcome header */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-between mb-10"
+      >
+        <div>
+          <p className="text-[#4A6358] text-sm mb-1">{t("dashboard.welcome", lang)}</p>
+          <h1 className="font-heading text-3xl font-semibold text-[#F5FAF7]">
+            {user?.email?.split("@")[0] ?? "Learner"} 👋
+          </h1>
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-2 text-sm text-[#4A6358] hover:text-red-400 transition-colors"
+        >
+          <LogOut size={16} />
+          {t("dashboard.signOut", lang)}
+        </button>
+      </motion.div>
+
+      {/* Stats row */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10"
+      >
+        <StatCard icon={<BookOpen size={20} />} label={t("dashboard.coursesEnrolled", lang)} value={stats.coursesEnrolled} />
+        <StatCard icon={<GraduationCap size={20} />} label={t("dashboard.lessonsCompleted", lang)} value={stats.lessonsCompleted} />
+        <StatCard icon={<Trophy size={20} />} label={t("dashboard.certificatesEarned", lang)} value={stats.certificatesEarned} />
+      </motion.div>
+
+      {progressLoading && (
+        <div className="mb-10 space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-heading text-xl font-semibold text-[#F5FAF7]/30">{t("dashboard.myCourses", lang)}</p>
+          </div>
+          <SkeletonCourseProgressCard />
+          <SkeletonCourseProgressCard />
+        </div>
+      )}
+
+      {!progressLoading && hasCourses && (
+        <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-between mb-10"
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="mb-10"
         >
-          <div>
-            <p className="text-[#4A6358] text-sm mb-1">{t("dashboard.welcome", lang)}</p>
-            <h1 className="font-heading text-3xl font-semibold text-[#F5FAF7]">
-              {user?.email?.split("@")[0] ?? "Learner"} 👋
-            </h1>
-          </div>
-          <button
-            onClick={handleSignOut}
-            className="flex items-center gap-2 text-sm text-[#4A6358] hover:text-red-400 transition-colors"
-          >
-            <LogOut size={16} />
-            {t("dashboard.signOut", lang)}
-          </button>
-        </motion.div>
-
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10"
-        >
-          <StatCard icon={<BookOpen size={20} />} label={t("dashboard.coursesEnrolled", lang)} value={stats.coursesEnrolled} />
-          <StatCard icon={<GraduationCap size={20} />} label={t("dashboard.lessonsCompleted", lang)} value={stats.lessonsCompleted} />
-          <StatCard icon={<Trophy size={20} />} label={t("dashboard.certificatesEarned", lang)} value={stats.certificatesEarned} />
-        </motion.div>
-
-        {progressLoading && (
-          <div className="mb-10 space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <p className="font-heading text-xl font-semibold text-[#F5FAF7]/30">{t("dashboard.myCourses", lang)}</p>
-            </div>
-            <SkeletonCourseProgressCard />
-            <SkeletonCourseProgressCard />
-          </div>
-        )}
-
-        {!progressLoading && hasCourses && (
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="mb-10"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading text-xl font-semibold text-[#F5FAF7]">{t("dashboard.myCourses", lang)}</h2>
-              <Link
-                href="/courses"
-                className="inline-flex items-center gap-1.5 text-sm text-[#4A6358] hover:text-primary transition-colors"
-              >
-                {t("dashboard.viewAllCourses", lang)}
-                <ChevronRight size={14} />
-              </Link>
-            </div>
-
-            <div className="space-y-4">
-              {entries.map((entry, i) => (
-                <CourseProgressCard key={entry.course.id} entry={entry} delay={0.05 * i} />
-              ))}
-            </div>
-
-            {allComplete && (
-              <p className="mt-4 text-sm text-center text-[#4A6358]">{t("dashboard.allCaughtUp", lang)}</p>
-            )}
-          </motion.section>
-        )}
-
-        {/* Certificates section */}
-        {!progressLoading && certs.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-10"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-heading text-xl font-semibold text-[#F5FAF7]">
-                {t("dashboard.certificates", lang)}
-              </h2>
-              <Link
-                href="/dashboard/certificates"
-                className="inline-flex items-center gap-1.5 text-sm text-[#4A6358] hover:text-primary transition-colors"
-              >
-                {t("dashboard.viewAllCerts", lang)}
-                <ChevronRight size={14} />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {certs.slice(0, 3).map((cert, i) => (
-                <CertCard key={cert.id} cert={cert} delay={0.05 * i} lang={lang} />
-              ))}
-            </div>
-          </motion.section>
-        )}
-
-        {/* Start learning CTA — shown when there's nothing enrolled yet */}
-        {!progressLoading && !hasCourses && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 text-center"
-          >
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <LogoMark className="w-8 h-8" />
-            </div>
-            <h2 className="font-heading text-xl font-semibold text-[#F5FAF7] mb-2">
-              {t("dashboard.noCoursesTitle", lang)}
-            </h2>
-            <p className="text-[#4A6358] text-sm mb-6 max-w-sm mx-auto">{t("dashboard.noCoursesBody", lang)}</p>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading text-xl font-semibold text-[#F5FAF7]">{t("dashboard.myCourses", lang)}</h2>
             <Link
               href="/courses"
-              className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white
-                         font-medium rounded-xl px-6 py-2.5 text-sm transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-[#4A6358] hover:text-primary transition-colors"
             >
-              {t("dashboard.browseCourses", lang)}
-              <ArrowRight size={16} />
+              {t("dashboard.viewAllCourses", lang)}
+              <ChevronRight size={14} />
             </Link>
-          </motion.div>
-        )}
-      </div>
+          </div>
+
+          <div className="space-y-4">
+            {entries.map((entry, i) => (
+              <CourseProgressCard key={entry.course.id} entry={entry} delay={0.05 * i} />
+            ))}
+          </div>
+
+          {allComplete && (
+            <p className="mt-4 text-sm text-center text-[#4A6358]">{t("dashboard.allCaughtUp", lang)}</p>
+          )}
+        </motion.section>
+      )}
+
+      {/* Certificates section */}
+      {!progressLoading && certs.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-10"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading text-xl font-semibold text-[#F5FAF7]">
+              {t("dashboard.certificates", lang)}
+            </h2>
+            <Link
+              href="/dashboard/certificates"
+              className="inline-flex items-center gap-1.5 text-sm text-[#4A6358] hover:text-primary transition-colors"
+            >
+              {t("dashboard.viewAllCerts", lang)}
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {certs.slice(0, 3).map((cert, i) => (
+              <CertCard key={cert.id} cert={cert} delay={0.05 * i} lang={lang} />
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* Start learning CTA — shown when there's nothing enrolled yet */}
+      {!progressLoading && !hasCourses && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 text-center"
+        >
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <LogoMark className="w-8 h-8" />
+          </div>
+          <h2 className="font-heading text-xl font-semibold text-[#F5FAF7] mb-2">
+            {t("dashboard.noCoursesTitle", lang)}
+          </h2>
+          <p className="text-[#4A6358] text-sm mb-6 max-w-sm mx-auto">{t("dashboard.noCoursesBody", lang)}</p>
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white
+                       font-medium rounded-xl px-6 py-2.5 text-sm transition-colors"
+          >
+            {t("dashboard.browseCourses", lang)}
+            <ArrowRight size={16} />
+          </Link>
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -256,25 +254,23 @@ export default function DashboardPage() {
 function DashboardLoading() {
   const { lang } = useLanguage();
   return (
-    <div className="min-h-screen bg-dark">
-      <div className="max-w-5xl mx-auto px-4 pt-24 pb-16">
-        <div className="flex items-center justify-between mb-10">
-          <div className="space-y-2">
-            <p className="text-[#4A6358] text-sm">{t("dashboard.welcome", lang)}</p>
-            <Skeleton className="h-8 w-48" />
-          </div>
+    <div className="max-w-5xl mx-auto px-4 pb-16">
+      <div className="flex items-center justify-between mb-10">
+        <div className="space-y-2">
+          <p className="text-[#4A6358] text-sm">{t("dashboard.welcome", lang)}</p>
+          <Skeleton className="h-8 w-48" />
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <SkeletonStatCard />
-          <SkeletonStatCard />
-          <SkeletonStatCard />
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        <SkeletonStatCard />
+        <SkeletonStatCard />
+        <SkeletonStatCard />
+      </div>
 
-        <div className="space-y-4">
-          <SkeletonCourseProgressCard />
-          <SkeletonCourseProgressCard />
-        </div>
+      <div className="space-y-4">
+        <SkeletonCourseProgressCard />
+        <SkeletonCourseProgressCard />
       </div>
     </div>
   );

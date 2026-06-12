@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import QRCode from "qrcode";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { getUserFromRequest } from "@/lib/supabase/get-user";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { parseLang } from "@/lib/auth/messages";
 import {
   issueCertificateOnChain,
   deriveStudentPubkey,
 } from "@/lib/certificates/solana";
+import { CertificatePDF } from "@/lib/certificates/pdf";
+import { getNotificationPreferences } from "@/lib/user/preferences";
+import { sendMail } from "@/lib/email/mailer";
+import { certificatePdfEmail } from "@/lib/email/templates";
+
+export const runtime = "nodejs";
 
 // POST /api/certificates/claim
-// Body: { courseId: string, displayName?: string }
+// Body: { courseId: string, displayName?: string, lang?: "en" | "fr" }
 // Works for web (cookie) and mobile (Bearer token) via getUserFromRequest.
 // All DB reads use the admin/service-role client after we verify the user
 // identity ourselves — no cookie-session dependency for row-level operations.
@@ -20,6 +29,7 @@ export async function POST(request: NextRequest) {
   const courseId: string | undefined = body?.courseId;
   const displayNameInput: string | undefined =
     typeof body?.displayName === "string" ? body.displayName.trim() : undefined;
+  const lang = parseLang(body?.lang);
 
   if (!courseId)
     return NextResponse.json({ error: "courseId required" }, { status: 400 });
@@ -87,7 +97,7 @@ export async function POST(request: NextRequest) {
 
   const { data: courseRow } = await admin
     .from("courses")
-    .select("id, course_modules(course_lessons(id))")
+    .select("id, title_en, title_fr, course_modules(course_lessons(id))")
     .eq("id", courseId)
     .eq("status", "published")
     .maybeSingle();
@@ -160,6 +170,45 @@ export async function POST(request: NextRequest) {
       "[cert:mint] on-chain minting failed — cert saved in DB only:",
       err,
     );
+  }
+
+  // ── 6. Email the certificate PDF (non-blocking) ───────────────────────────────
+  try {
+    const prefs = await getNotificationPreferences(admin, user.id);
+    if (prefs.emailCertificatePdf && user.email) {
+      const courseName = lang === "fr" ? courseRow.title_fr : courseRow.title_en;
+      const verifyUrl = `${appUrl}/certificate/${certId}`;
+      const siteHost = new URL(appUrl).host;
+
+      const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
+        width: 240,
+        margin: 1,
+        color: { dark: "#0A0F0E", light: "#FFFFFF" },
+      });
+
+      const pdfBuffer = await renderToBuffer(
+        <CertificatePDF
+          displayName={displayName}
+          courseName={courseName}
+          issuedAt={new Date().toISOString()}
+          certId={certId}
+          certificatePda={certificatePda}
+          qrDataUrl={qrDataUrl}
+          verifyUrl={verifyUrl}
+          siteHost={siteHost}
+        />,
+      );
+
+      await sendMail({
+        to: user.email,
+        ...certificatePdfEmail(lang, courseName),
+        attachments: [
+          { filename: `fundi3-certificate-${certId}.pdf`, content: pdfBuffer, contentType: "application/pdf" },
+        ],
+      });
+    }
+  } catch (err) {
+    console.error("[cert:claim] certificate-pdf email failed:", err);
   }
 
   return NextResponse.json({

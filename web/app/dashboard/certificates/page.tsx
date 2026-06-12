@@ -39,78 +39,76 @@ export default function CertificatesPage() {
   if (authLoading) return <CertificatesLoading />;
 
   return (
-    <div className="min-h-screen bg-dark">
-      <div className="max-w-4xl mx-auto px-4 pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
+    <div className="max-w-4xl mx-auto px-4 pb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-8"
+      >
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-sm mb-5 transition-colors"
+          style={{ color: "#4A6358" }}
         >
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-sm mb-5 transition-colors"
-            style={{ color: "#4A6358" }}
+          <ArrowLeft size={14} />
+          {t("dashboard.welcome", lang)}
+        </Link>
+        <h1 className="font-heading text-3xl font-semibold" style={{ color: "#F5FAF7" }}>
+          {t("dashboard.certificates", lang)}
+        </h1>
+        <p className="font-body text-sm mt-1" style={{ color: "#4A6358" }}>
+          {loading ? "" : certs.length === 0
+            ? "Complete a course to earn your first NFT certificate."
+            : `${certs.length} certificate${certs.length !== 1 ? "s" : ""} earned`}
+        </p>
+      </motion.div>
+
+      {loading && (
+        <div className="space-y-4">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+          ))}
+        </div>
+      )}
+
+      {!loading && certs.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border p-10 text-center"
+          style={{ borderColor: "#1E2E28", backgroundColor: "rgba(255,255,255,0.02)" }}
+        >
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            style={{ backgroundColor: "rgba(239,159,39,0.1)" }}
           >
-            <ArrowLeft size={14} />
-            {t("dashboard.welcome", lang)}
-          </Link>
-          <h1 className="font-heading text-3xl font-semibold" style={{ color: "#F5FAF7" }}>
-            {t("dashboard.certificates", lang)}
-          </h1>
-          <p className="font-body text-sm mt-1" style={{ color: "#4A6358" }}>
-            {loading ? "" : certs.length === 0
-              ? "Complete a course to earn your first NFT certificate."
-              : `${certs.length} certificate${certs.length !== 1 ? "s" : ""} earned`}
+            <Award size={26} style={{ color: "#EF9F27" }} />
+          </div>
+          <p className="font-heading font-semibold text-lg mb-2" style={{ color: "#F5FAF7" }}>
+            No certificates yet
           </p>
-        </motion.div>
-
-        {loading && (
-          <div className="space-y-4">
-            {[0, 1, 2].map((i) => (
-              <Skeleton key={i} className="h-24 w-full rounded-2xl" />
-            ))}
-          </div>
-        )}
-
-        {!loading && certs.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border p-10 text-center"
-            style={{ borderColor: "#1E2E28", backgroundColor: "rgba(255,255,255,0.02)" }}
+          <p className="font-body text-sm mb-6" style={{ color: "#4A6358" }}>
+            Finish all lessons in a course to earn a verified NFT certificate on Solana.
+          </p>
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-transform hover:scale-[1.02]"
+            style={{ backgroundColor: "#0F6E56", color: "#F5FAF7" }}
           >
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: "rgba(239,159,39,0.1)" }}
-            >
-              <Award size={26} style={{ color: "#EF9F27" }} />
-            </div>
-            <p className="font-heading font-semibold text-lg mb-2" style={{ color: "#F5FAF7" }}>
-              No certificates yet
-            </p>
-            <p className="font-body text-sm mb-6" style={{ color: "#4A6358" }}>
-              Finish all lessons in a course to earn a verified NFT certificate on Solana.
-            </p>
-            <Link
-              href="/courses"
-              className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-transform hover:scale-[1.02]"
-              style={{ backgroundColor: "#0F6E56", color: "#F5FAF7" }}
-            >
-              Browse Courses
-              <ChevronRight size={14} />
-            </Link>
-          </motion.div>
-        )}
+            Browse Courses
+            <ChevronRight size={14} />
+          </Link>
+        </motion.div>
+      )}
 
-        {!loading && certs.length > 0 && (
-          <div className="space-y-4">
-            {certs.map((cert, i) => (
-              <CertRow key={cert.id} cert={cert} delay={0.04 * i} lang={lang} />
-            ))}
-          </div>
-        )}
-      </div>
+      {!loading && certs.length > 0 && (
+        <div className="space-y-4">
+          {certs.map((cert, i) => (
+            <CertRow key={cert.id} cert={cert} delay={0.04 * i} lang={lang} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -188,13 +186,11 @@ function CertRow({ cert, delay, lang }: { cert: CertItem; delay: number; lang: L
 
 function CertificatesLoading() {
   return (
-    <div className="min-h-screen bg-dark">
-      <div className="max-w-4xl mx-auto px-4 pt-24 pb-16 space-y-4">
-        <Skeleton className="h-10 w-56 rounded-xl" />
-        {[0, 1, 2].map((i) => (
-          <Skeleton key={i} className="h-24 w-full rounded-2xl" />
-        ))}
-      </div>
+    <div className="max-w-4xl mx-auto px-4 pb-16 space-y-4">
+      <Skeleton className="h-10 w-56 rounded-xl" />
+      {[0, 1, 2].map((i) => (
+        <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+      ))}
     </div>
   );
 }

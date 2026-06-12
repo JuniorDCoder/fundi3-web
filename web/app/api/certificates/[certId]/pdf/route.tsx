@@ -37,8 +37,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   const courseName =
     (lang === "fr" ? course?.title_fr || course?.title_en : course?.title_en) ?? "Web3 Course";
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://fundi3.xyz";
   const verifyUrl = `${appUrl}/certificate/${cert.id}`;
+  const siteHost = new URL(appUrl).host;
 
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     width: 240,
@@ -55,6 +56,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       certificatePda={cert.certificate_pda ?? null}
       qrDataUrl={qrDataUrl}
       verifyUrl={verifyUrl}
+      siteHost={siteHost}
     />,
   );
 

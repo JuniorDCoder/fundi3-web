@@ -18,7 +18,7 @@ export const brand = {
     bg: "#0A0F0E",
     surface: "#111915",
     border: "#1E2E28",
-    muted: "#4A6358",
+    muted: "#EBD9D2", // lighter than web's #4A6358 for better contrast on mobile
   },
   white: "#F5FAF7",
 } as const;

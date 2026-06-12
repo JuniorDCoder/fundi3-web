@@ -165,6 +165,18 @@ export async function touchEnrollment(supabase: SupabaseClient, userId: string, 
   if (error) throw error;
 }
 
+/** Sets `completed_at` the first time a learner reaches 100% — a no-op on subsequent calls. */
+export async function markEnrollmentCompleted(supabase: SupabaseClient, userId: string, courseId: string): Promise<void> {
+  const { error } = await supabase
+    .from("course_enrollments")
+    .update({ completed_at: new Date().toISOString() })
+    .eq("user_id", userId)
+    .eq("course_id", courseId)
+    .is("completed_at", null);
+
+  if (error) throw error;
+}
+
 export async function listUserEnrollments(supabase: SupabaseClient, userId: string): Promise<DbCourseEnrollment[]> {
   const { data, error } = await supabase
     .from("course_enrollments")

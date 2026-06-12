@@ -90,11 +90,13 @@ function CourseDetail({ course }: { course: LocalizedCourse }) {
   const lessonCount = localizedLessonCount(course);
   const moduleCount = localizedModuleCount(course);
 
-  const ctaLabel = course.isFree
-    ? t("courses.detail.start", lang)
-    : user
-      ? t("courses.detail.continue", lang)
-      : t("courses.detail.signInToStart", lang);
+  const ctaLabel = summary?.enrolled
+    ? t("courses.detail.continue", lang)
+    : course.isFree
+      ? t("courses.detail.start", lang)
+      : user
+        ? t("courses.detail.continue", lang)
+        : t("courses.detail.signInToStart", lang);
 
   // Resume where the learner left off — fall back to the course's first lesson
   // (works instantly for brand-new learners, before the progress summary loads).

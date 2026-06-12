@@ -1,11 +1,14 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuth } from "@/hooks/useAuth";
 import { t } from "@/lib/i18n";
 import { useCourses } from "@/hooks/useCourses";
 import { type CourseLevel } from "@/lib/courses/types";
+import { createClient } from "@/lib/supabase/client";
+import { listUserEnrollments } from "@/lib/courses/progress";
 import { CourseGrid } from "@/components/courses/CourseGrid";
 import { SkeletonCourseGrid } from "@/components/ui/Skeleton";
 
@@ -17,8 +20,21 @@ export default function CoursesPage() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   const { courses, loading } = useCourses();
+  const { user } = useAuth();
   const [levelFilter, setLevelFilter] = useState<LevelFilter>("all");
   const [freeOnly, setFreeOnly] = useState(false);
+  const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!user) {
+      setEnrolledIds(new Set());
+      return;
+    }
+    const supabase = createClient();
+    listUserEnrollments(supabase, user.id)
+      .then((rows) => setEnrolledIds(new Set(rows.map((r) => r.courseId))))
+      .catch(() => {});
+  }, [user]);
 
   const filtered = useMemo(() => {
     return courses.filter((course) => {
@@ -135,7 +151,11 @@ export default function CoursesPage() {
           )}
 
           {/* Grid */}
-          {loading ? <SkeletonCourseGrid count={6} /> : <CourseGrid courses={filtered} inView={inView} />}
+          {loading ? (
+            <SkeletonCourseGrid count={6} />
+          ) : (
+            <CourseGrid courses={filtered} inView={inView} enrolledCourseIds={enrolledIds} />
+          )}
         </div>
       </section>
     </div>

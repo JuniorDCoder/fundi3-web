@@ -22,6 +22,7 @@ export async function sendMail(options: {
   subject: string;
   html: string;
   text: string;
+  attachments?: { filename: string; content: Buffer; contentType?: string }[];
 }) {
   const fromName = process.env.SMTP_FROM_NAME ?? "Fundi3";
   const fromAddress = process.env.SMTP_FROM_ADDRESS ?? process.env.SMTP_USERNAME;
@@ -32,5 +33,6 @@ export async function sendMail(options: {
     subject: options.subject,
     html: options.html,
     text: options.text,
+    attachments: options.attachments,
   });
 }

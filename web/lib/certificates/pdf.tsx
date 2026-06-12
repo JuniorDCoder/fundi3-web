@@ -180,6 +180,7 @@ export interface CertificatePdfProps {
   certificatePda: string | null;
   qrDataUrl: string;
   verifyUrl: string;
+  siteHost: string;
 }
 
 /** A4-landscape PDF certificate, styled to match the `/certificate/[certId]` verify page. */
@@ -191,6 +192,7 @@ export function CertificatePDF({
   certificatePda,
   qrDataUrl,
   verifyUrl,
+  siteHost,
 }: CertificatePdfProps) {
   const issuedDate = new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
@@ -203,8 +205,8 @@ export function CertificatePDF({
       <Page size="A4" orientation="landscape" style={styles.page}>
         <Svg
           style={{ position: "absolute", top: 0, left: 0 }}
-          width={PAGE_WIDTH}
-          height={PAGE_HEIGHT}
+          width="100%"
+          height="100%"
           viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
         >
           <Defs>
@@ -258,7 +260,7 @@ export function CertificatePDF({
             </View>
           </View>
 
-          <Text style={styles.strap}>Built in Cameroon. For Africa. · fundi3.xyz</Text>
+          <Text style={styles.strap}>Built in Cameroon. For Africa. · {siteHost}</Text>
         </View>
       </Page>
     </Document>

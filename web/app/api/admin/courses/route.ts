@@ -5,6 +5,7 @@ import { getAuthenticatedAdmin } from "@/lib/admin/guard";
 import { courseMessage } from "@/lib/courses/messages";
 import { findCourseBySlug, listAllCourses, saveCourseTree } from "@/lib/courses/queries";
 import { parseCourseTreeInput } from "@/lib/courses/validation";
+import { notifyNewCourseSubscribers } from "@/lib/email/notifications";
 
 /** GET: list every course (any status) — the admin catalog table. */
 export async function GET(request: NextRequest) {
@@ -58,6 +59,13 @@ export async function POST(request: NextRequest) {
 
   try {
     const course = await saveCourseTree(admin, input, caller.user.id);
+
+    if (course.status === "published") {
+      await notifyNewCourseSubscribers(admin, course).catch((err) =>
+        console.error("[admin:courses] new-course email failed:", err),
+      );
+    }
+
     return NextResponse.json({ course }, { status: 201 });
   } catch {
     return NextResponse.json(

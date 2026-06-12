@@ -323,6 +323,30 @@ export const fr: Record<string, string> = {
   "dashboard.allCaughtUp": "Vous avez terminé toutes les leçons — bravo !",
   "dashboard.certificates": "Mes certificats",
   "dashboard.viewAllCerts": "Voir tout",
+  "dashboard.navOverview": "Aperçu",
+  "dashboard.navCertificates": "Certificats",
+  "dashboard.navProfile": "Profil",
+  "dashboard.navSettings": "Paramètres",
+
+  // --- Profil ---
+  "profile.title": "Profil",
+  "profile.displayNameLabel": "Nom sur les certificats",
+  "profile.displayNameHint": "C'est le nom qui apparaît sur vos certificats NFT.",
+  "profile.email": "Email",
+  "profile.save": "Enregistrer",
+  "profile.saved": "Profil mis à jour",
+  "profile.saveError": "Impossible d'enregistrer votre profil",
+
+  // --- Paramètres ---
+  "settings.title": "Paramètres",
+  "settings.notificationsTitle": "Notifications par email",
+  "settings.notifCourseCompleted": "Cours terminé",
+  "settings.notifCourseCompletedHint": "Recevez un email quand vous terminez un cours.",
+  "settings.notifNewCourse": "Nouveaux cours",
+  "settings.notifNewCourseHint": "Recevez un email quand un nouveau cours est publié.",
+  "settings.notifCertificatePdf": "PDF du certificat",
+  "settings.notifCertificatePdfHint": "Recevez le PDF de votre certificat par email.",
+  "settings.saveError": "Impossible d'enregistrer vos préférences",
 
   // --- Learn / Lecteur de leçon ---
   "learn.back": "Retour au cours",

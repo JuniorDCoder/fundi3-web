@@ -19,7 +19,9 @@ function CourseMockup() {
       {/* Glow behind card */}
       <div
         className="absolute -inset-4 rounded-3xl blur-2xl opacity-20"
-        style={{ background: "radial-gradient(ellipse, #0F6E56, transparent 70%)" }}
+        style={{
+          background: "radial-gradient(ellipse, #0F6E56, transparent 70%)",
+        }}
       />
 
       {/* Card */}
@@ -28,7 +30,10 @@ function CourseMockup() {
         style={{ backgroundColor: "#111915", borderColor: "#1E2E28" }}
       >
         {/* Top bar — lesson title + progress */}
-        <div className="px-5 pt-5 pb-4 border-b" style={{ borderColor: "#1E2E28" }}>
+        <div
+          className="px-5 pt-5 pb-4 border-b"
+          style={{ borderColor: "#1E2E28" }}
+        >
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-2 h-2 rounded-full"
@@ -38,7 +43,10 @@ function CourseMockup() {
               Lesson 3 / 6
             </span>
           </div>
-          <p className="font-heading font-semibold text-sm" style={{ color: "#F5FAF7" }}>
+          <p
+            className="font-heading font-semibold text-sm"
+            style={{ color: "#F5FAF7" }}
+          >
             What is a Block?
           </p>
           {/* Progress bar */}
@@ -57,12 +65,30 @@ function CourseMockup() {
         </div>
 
         {/* Code block */}
-        <div className="px-5 py-4 font-mono text-xs space-y-1" style={{ color: "#4A6358" }}>
-          <p><span style={{ color: "#1D9E75" }}>const</span> <span style={{ color: "#F5FAF7" }}>block</span> = {"{"}</p>
-          <p className="pl-4"><span style={{ color: "#EF9F27" }}>index</span>: <span style={{ color: "#9FE1CB" }}>3</span>,</p>
-          <p className="pl-4"><span style={{ color: "#EF9F27" }}>data</span>: <span style={{ color: "#9FE1CB" }}>{'"Njangi payment"'}</span>,</p>
-          <p className="pl-4"><span style={{ color: "#EF9F27" }}>hash</span>: <span style={{ color: "#9FE1CB" }}>{'"0x4a2f…"'}</span>,</p>
-          <p className="pl-4"><span style={{ color: "#EF9F27" }}>prevHash</span>: <span style={{ color: "#9FE1CB" }}>{'"0x9e1b…"'}</span></p>
+        <div
+          className="px-5 py-4 font-mono text-xs space-y-1"
+          style={{ color: "#4A6358" }}
+        >
+          <p>
+            <span style={{ color: "#1D9E75" }}>const</span>{" "}
+            <span style={{ color: "#F5FAF7" }}>block</span> = {"{"}
+          </p>
+          <p className="pl-4">
+            <span style={{ color: "#EF9F27" }}>index</span>:{" "}
+            <span style={{ color: "#9FE1CB" }}>3</span>,
+          </p>
+          <p className="pl-4">
+            <span style={{ color: "#EF9F27" }}>data</span>:{" "}
+            <span style={{ color: "#9FE1CB" }}>{'"Njangi payment"'}</span>,
+          </p>
+          <p className="pl-4">
+            <span style={{ color: "#EF9F27" }}>hash</span>:{" "}
+            <span style={{ color: "#9FE1CB" }}>{'"0x4a2f…"'}</span>,
+          </p>
+          <p className="pl-4">
+            <span style={{ color: "#EF9F27" }}>prevHash</span>:{" "}
+            <span style={{ color: "#9FE1CB" }}>{'"0x9e1b…"'}</span>
+          </p>
           <p>{"}"}</p>
         </div>
 
@@ -86,7 +112,10 @@ function CourseMockup() {
         {/* AI tutor hint */}
         <div
           className="mx-5 mb-5 px-4 py-3 rounded-xl flex items-start gap-3"
-          style={{ backgroundColor: "#0F6E5615", borderLeft: "2px solid #0F6E56" }}
+          style={{
+            backgroundColor: "#0F6E5615",
+            borderLeft: "2px solid #0F6E56",
+          }}
         >
           <div
             className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5"
@@ -94,8 +123,12 @@ function CourseMockup() {
           >
             <span className="text-white font-mono text-xs font-bold">AI</span>
           </div>
-          <p className="font-body text-xs leading-relaxed" style={{ color: "#9FE1CB" }}>
-            Pense à un bloc comme une page dans le registre du village — tout le monde peut la lire.
+          <p
+            className="font-body text-xs leading-relaxed"
+            style={{ color: "#9FE1CB" }}
+          >
+            Pense à un bloc comme une page dans le registre du village — tout le
+            monde peut la lire.
           </p>
         </div>
       </div>
@@ -107,22 +140,26 @@ function CourseMockup() {
 
 function SocialProofBar({ lang }: { lang: "en" | "fr" }) {
   return (
-    <div
-      className="border-t border-b py-5"
-      style={{ borderColor: "#1E2E28" }}
-    >
+    <div className="border-t border-b py-5" style={{ borderColor: "#1E2E28" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-center">
           <p className="font-body text-sm" style={{ color: "#4A6358" }}>
             {t("social.trusted", lang)}
           </p>
-          <div className="hidden sm:block h-4 w-px" style={{ backgroundColor: "#1E2E28" }} />
+          <div
+            className="hidden sm:block h-4 w-px"
+            style={{ backgroundColor: "#1E2E28" }}
+          />
           {[
             t("social.learners", lang),
             t("social.countries", lang),
             t("social.free", lang),
           ].map((stat, i) => (
-            <span key={i} className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.6)" }}>
+            <span
+              key={i}
+              className="font-body font-medium text-sm"
+              style={{ color: "rgba(245,250,247,0.6)" }}
+            >
               {stat}
             </span>
           ))}
@@ -138,13 +175,17 @@ export function Hero() {
   const { lang } = useLanguage();
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden" style={{ backgroundColor: "#0A0F0E" }}>
-
+    <section
+      className="relative min-h-screen flex flex-col overflow-hidden"
+      style={{ backgroundColor: "#0A0F0E" }}
+    >
       {/* CSS gradient orbs — green + amber, no JS */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 animate-pulse-slow"
-          style={{ background: "radial-gradient(circle, #0F6E56, transparent 65%)" }}
+          style={{
+            background: "radial-gradient(circle, #0F6E56, transparent 65%)",
+          }}
         />
         <div
           className="absolute -bottom-20 -right-20 w-[500px] h-[500px] rounded-full opacity-10 animate-pulse-slow"
@@ -162,7 +203,6 @@ export function Hero() {
       <div className="relative flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
             {/* Left — copy + CTAs */}
             <div className="space-y-8">
               {/* Section label */}
@@ -173,7 +213,11 @@ export function Hero() {
               >
                 <span
                   className="inline-flex items-center gap-2 font-mono text-xs px-3 py-1.5 rounded-full border"
-                  style={{ color: "#1D9E75", borderColor: "#1D9E7540", backgroundColor: "#1D9E7510" }}
+                  style={{
+                    color: "#1D9E75",
+                    borderColor: "#1D9E7540",
+                    backgroundColor: "#1D9E7510",
+                  }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                   Web3 · Africa · {lang === "fr" ? "Bilingue" : "Bilingual"}
@@ -225,7 +269,11 @@ export function Hero() {
                   lang === "fr" ? "Pas de crypto requise" : "No crypto needed",
                   lang === "fr" ? "Gratuit pour commencer" : "Free to start",
                 ].map((point) => (
-                  <span key={point} className="flex items-center gap-1.5 font-body text-sm" style={{ color: "#4A6358" }}>
+                  <span
+                    key={point}
+                    className="flex items-center gap-1.5 font-body text-sm"
+                    style={{ color: "#4A6358" }}
+                  >
                     <CheckCircle size={14} style={{ color: "#0F6E56" }} />
                     {point}
                   </span>
@@ -250,7 +298,10 @@ export function Hero() {
                 <a
                   href="#how-it-works"
                   className="inline-flex items-center justify-center gap-2 font-heading font-medium text-base px-7 py-4 rounded-xl border transition-colors hover:border-white/20"
-                  style={{ borderColor: "#1E2E28", color: "rgba(245,250,247,0.7)" }}
+                  style={{
+                    borderColor: "#1E2E28",
+                    color: "rgba(245,250,247,0.7)",
+                  }}
                 >
                   <Play size={15} />
                   {t("hero.cta.secondary", lang)}

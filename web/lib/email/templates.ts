@@ -58,6 +58,14 @@ function codeBlock(code: string) {
   </div>`;
 }
 
+function ctaButton(href: string, label: string) {
+  return `<div style="margin:24px 0;">
+    <a href="${href}" style="display:inline-block;font-family:'Space Grotesk',Arial,sans-serif;font-size:14px;font-weight:600;color:${brand.bg};background:${brand.primary};border-radius:10px;padding:12px 24px;text-decoration:none;">
+      ${label}
+    </a>
+  </div>`;
+}
+
 export function verificationEmail(lang: Lang, code: string) {
   if (lang === "fr") {
     return {
@@ -127,5 +135,115 @@ export function welcomeEmail(lang: Lang, firstName?: string) {
        </p>`,
     ),
     text: `Welcome, ${name}!\n\nYour Fundi3 account is verified and ready. Sign in to start your first course.`,
+  };
+}
+
+const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://fundi3.xyz").replace(/\/$/, "");
+
+export function courseCompletedEmail(lang: Lang, courseName: string) {
+  const dashboardUrl = `${appUrl}/dashboard`;
+
+  if (lang === "fr") {
+    return {
+      subject: `Félicitations — vous avez terminé ${courseName} 🎉`,
+      html: wrapper(
+        lang,
+        "Cours terminé ! 🎉",
+        `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+           Bravo ! Vous avez terminé <strong>${courseName}</strong>. C'est une étape importante dans votre parcours Web3.
+         </p>
+         <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+           Rendez-vous sur votre tableau de bord pour réclamer votre certificat NFT, vérifiable sur la blockchain Solana.
+         </p>
+         ${ctaButton(dashboardUrl, "Réclamer mon certificat")}`,
+      ),
+      text: `Bravo ! Vous avez terminé ${courseName}.\n\nRendez-vous sur votre tableau de bord pour réclamer votre certificat NFT : ${dashboardUrl}`,
+    };
+  }
+
+  return {
+    subject: `You completed ${courseName} 🎉`,
+    html: wrapper(
+      lang,
+      "Course completed! 🎉",
+      `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+         Congratulations! You've completed <strong>${courseName}</strong> — a big step in your Web3 journey.
+       </p>
+       <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+         Head to your dashboard to claim your NFT certificate, verifiable on the Solana blockchain.
+       </p>
+       ${ctaButton(dashboardUrl, "Claim my certificate")}`,
+    ),
+    text: `Congratulations! You've completed ${courseName}.\n\nHead to your dashboard to claim your NFT certificate: ${dashboardUrl}`,
+  };
+}
+
+export function certificatePdfEmail(lang: Lang, courseName: string) {
+  if (lang === "fr") {
+    return {
+      subject: `Votre certificat — ${courseName}`,
+      html: wrapper(
+        lang,
+        "Votre certificat est prêt 📜",
+        `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+           Voici votre certificat de complétion pour <strong>${courseName}</strong>, en pièce jointe (PDF).
+         </p>
+         <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+           Ce certificat est aussi vérifiable en ligne via le QR code qu'il contient.
+         </p>`,
+      ),
+      text: `Voici votre certificat de complétion pour ${courseName}, en pièce jointe (PDF).`,
+    };
+  }
+
+  return {
+    subject: `Your certificate — ${courseName}`,
+    html: wrapper(
+      lang,
+      "Your certificate is ready 📜",
+      `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+         Here's your certificate of completion for <strong>${courseName}</strong>, attached as a PDF.
+       </p>
+       <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+         It's also verifiable online via the QR code printed on it.
+       </p>`,
+    ),
+    text: `Here's your certificate of completion for ${courseName}, attached as a PDF.`,
+  };
+}
+
+export function newCourseEmail(lang: Lang, courseTitle: string, courseUrl: string) {
+  if (lang === "fr") {
+    return {
+      subject: `Nouveau cours sur Fundi3 : ${courseTitle}`,
+      html: wrapper(
+        lang,
+        "Nouveau cours disponible 🚀",
+        `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+           Un nouveau cours vient d'être publié : <strong>${courseTitle}</strong>.
+         </p>
+         <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+           Découvrez-le dès maintenant et continuez votre parcours Web3.
+         </p>
+         ${ctaButton(courseUrl, "Voir le cours")}`,
+      ),
+      text: `Un nouveau cours vient d'être publié : ${courseTitle}.\n\nDécouvrez-le ici : ${courseUrl}`,
+    };
+  }
+
+  return {
+    subject: `New course on Fundi3: ${courseTitle}`,
+    html: wrapper(
+      lang,
+      "New course available 🚀",
+      `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+         A new course just went live: <strong>${courseTitle}</strong>.
+       </p>
+       <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+         Check it out now and keep your Web3 journey going.
+       </p>
+       ${ctaButton(courseUrl, "View course")}`,
+    ),
+    text: `A new course just went live: ${courseTitle}.\n\nCheck it out here: ${courseUrl}`,
   };
 }

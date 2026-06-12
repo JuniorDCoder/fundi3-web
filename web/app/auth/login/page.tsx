@@ -9,6 +9,7 @@ import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle, Sparkles } from "lucide
 import { LogoFull } from "@/components/brand/Logo";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { isAdminUser } from "@/lib/admin/metadata";
 import { t } from "@/lib/i18n";
 
 function LoginForm() {
@@ -17,7 +18,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const redirect = searchParams.get("redirect") ?? "/dashboard";
+  const redirectParam = searchParams.get("redirect");
   const errorParam = searchParams.get("error");
   const successParam = searchParams.get("success");
 
@@ -36,7 +37,7 @@ function LoginForm() {
     setError(null);
     setLoading(true);
 
-    const { error: signInError } = await signIn(email, password);
+    const { data, error: signInError } = await signIn(email, password);
 
     if (signInError) {
       setError(signInError.message);
@@ -49,6 +50,7 @@ function LoginForm() {
       icon: <Sparkles size={16} className="text-accent" />,
     });
 
+    const redirect = redirectParam ?? (isAdminUser(data?.user) ? "/admin" : "/dashboard");
     router.push(redirect);
     router.refresh();
   }

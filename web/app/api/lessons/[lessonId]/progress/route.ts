@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import type { Lang } from "@/lib/i18n";
 import { authMessage, parseLang } from "@/lib/auth/messages";
 import { courseMessage } from "@/lib/courses/messages";
-import { getLessonCourseRef } from "@/lib/courses/queries";
-import { touchEnrollment, upsertLessonProgress, type LessonProgressStatus } from "@/lib/courses/progress";
+import { getCourseById, getLessonCourseRef } from "@/lib/courses/queries";
+import {
+  buildCourseProgressSummary,
+  getEnrollment,
+  listLessonProgressForCourse,
+  markEnrollmentCompleted,
+  touchEnrollment,
+  upsertLessonProgress,
+  type LessonProgressStatus,
+} from "@/lib/courses/progress";
+import { getNotificationPreferences } from "@/lib/user/preferences";
+import { sendMail } from "@/lib/email/mailer";
+import { courseCompletedEmail } from "@/lib/email/templates";
 
 interface RouteParams {
   params: { lessonId: string };
@@ -62,11 +75,49 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       // Non-fatal — the learner may not be enrolled yet (the player enrolls on mount).
     });
 
+    await maybeSendCourseCompletedEmail(supabase, user, ref.courseId, lang);
+
     return NextResponse.json({ progress });
   } catch {
     return NextResponse.json(
       { error: "progress_update_failed", message: courseMessage("progressUpdateFailed", lang) },
       { status: 500 },
     );
+  }
+}
+
+/**
+ * On a learner's first 100% completion of a course, stamps
+ * `course_enrollments.completed_at` and — if they haven't opted out — emails
+ * them a "course completed" notification. Never throws: a failure here must
+ * not turn a successful progress update into a 500.
+ */
+async function maybeSendCourseCompletedEmail(
+  supabase: SupabaseClient,
+  user: User,
+  courseId: string,
+  lang: Lang,
+): Promise<void> {
+  try {
+    const enrollment = await getEnrollment(supabase, user.id, courseId);
+    if (!enrollment || enrollment.completedAt) return;
+
+    const course = await getCourseById(supabase, courseId);
+    if (!course) return;
+
+    const progressRows = await listLessonProgressForCourse(supabase, user.id, courseId);
+    const summary = buildCourseProgressSummary(course, enrollment, progressRows);
+    if (summary.percentComplete !== 100) return;
+
+    await markEnrollmentCompleted(supabase, user.id, courseId);
+
+    if (!user.email) return;
+    const prefs = await getNotificationPreferences(supabase, user.id);
+    if (!prefs.emailCourseCompleted) return;
+
+    const courseName = lang === "fr" ? course.titleFr : course.titleEn;
+    await sendMail({ to: user.email, ...courseCompletedEmail(lang, courseName) });
+  } catch (err) {
+    console.error("[progress] course-completed email failed:", err);
   }
 }

@@ -5,6 +5,7 @@ import { getAuthenticatedAdmin } from "@/lib/admin/guard";
 import { courseMessage } from "@/lib/courses/messages";
 import { deleteCourse, findCourseBySlug, getCourseById, saveCourseTree } from "@/lib/courses/queries";
 import { parseCourseTreeInput } from "@/lib/courses/validation";
+import { notifyNewCourseSubscribers } from "@/lib/email/notifications";
 
 interface RouteParams {
   params: { courseId: string };
@@ -80,6 +81,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
   try {
     const course = await saveCourseTree(admin, input, existing.createdBy);
+
+    if (existing.status !== "published" && course.status === "published") {
+      await notifyNewCourseSubscribers(admin, course).catch((err) =>
+        console.error("[admin:courses] new-course email failed:", err),
+      );
+    }
+
     return NextResponse.json({ course });
   } catch {
     return NextResponse.json(
