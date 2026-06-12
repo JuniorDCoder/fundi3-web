@@ -1,10 +1,10 @@
 This is the Fundi3 web app — a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-> Note: this app lives in `frontend/`. The Solana/Anchor smart-contract workspace is the sibling `contracts/` directory at the repo root — see `CLAUDE.md` for the full project overview.
+> Note: this app lives in `web/`. See `CLAUDE.md` for the full project overview.
 
 ## Getting Started
 
-First, `cd frontend` (if you aren't already there), then run the development server:
+First, `cd web` (if you aren't already there), then run the development server:
 
 ```bash
 npm run dev
