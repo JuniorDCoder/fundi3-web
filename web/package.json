@@ -10,6 +10,7 @@
     "admin:promote": "node scripts/promote-admin.mjs"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@react-pdf/renderer": "^4.5.1",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-phantom": "^0.9.29",

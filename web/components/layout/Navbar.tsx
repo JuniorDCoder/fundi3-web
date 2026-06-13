@@ -10,6 +10,7 @@ import { MobileMenu } from "./MobileMenu";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { isAdminUser } from "@/lib/admin/metadata";
+import { isChromeHidden } from "@/lib/layout/chrome";
 import { t } from "@/lib/i18n";
 
 const AUTH_PATHS = ["/auth/signup", "/auth/login", "/auth/verify"];
@@ -31,8 +32,8 @@ export function Navbar() {
 
   const isAuthPage = AUTH_PATHS.some((p) => pathname?.startsWith(p));
 
-  // The /admin area renders its own sidebar/topbar shell — skip the public navbar entirely.
-  if (pathname?.startsWith("/admin")) return null;
+  // /admin, /embed and /connect render their own shells — skip the public navbar entirely.
+  if (isChromeHidden(pathname)) return null;
 
   const navLinks = [
     { href: "/courses", label: t("nav.courses", lang) },

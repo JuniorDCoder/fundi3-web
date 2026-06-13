@@ -26,6 +26,7 @@ import {
   COURSE_STATUSES,
   LESSON_TYPES,
   levelBadgeKey,
+  type CodeLanguage,
   type CourseLanguageMode,
   type CourseLevel,
   type CourseStatus,
@@ -33,9 +34,15 @@ import {
   type DbCourse,
   type LessonType,
 } from "@/lib/courses/types";
+import {
+  QuizQuestionEditor,
+  quizQuestionFromDb,
+  type EditorQuizQuestion,
+} from "./QuizQuestionEditor";
+import { CodeLessonEditor } from "./CodeLessonEditor";
 
 let keyCounter = 0;
-function nextKey(prefix: string): string {
+export function nextKey(prefix: string): string {
   keyCounter += 1;
   return `${prefix}-${keyCounter}`;
 }
@@ -50,6 +57,10 @@ interface EditorLesson {
   contentEn: string;
   contentFr: string;
   videoUrl: string;
+  codeLanguage: CodeLanguage | null;
+  codeStarterEn: string;
+  codeStarterFr: string;
+  quizQuestions: EditorQuizQuestion[];
 }
 
 interface EditorModule {
@@ -70,6 +81,10 @@ function emptyLesson(): EditorLesson {
     contentEn: "",
     contentFr: "",
     videoUrl: "",
+    codeLanguage: null,
+    codeStarterEn: "",
+    codeStarterFr: "",
+    quizQuestions: [],
   };
 }
 
@@ -145,6 +160,10 @@ function fromDbCourse(course: DbCourse): {
                     contentEn: lesson.contentEn,
                     contentFr: lesson.contentFr,
                     videoUrl: lesson.videoUrl ?? "",
+                    codeLanguage: lesson.codeLanguage,
+                    codeStarterEn: lesson.codeStarterEn ?? "",
+                    codeStarterFr: lesson.codeStarterFr ?? "",
+                    quizQuestions: lesson.quizQuestions.map(quizQuestionFromDb),
                   }))
                 : [emptyLesson()],
           }))
@@ -203,7 +222,7 @@ function splitTags(value: string): string[] {
 
 // ─── Shared field primitives ──────────────────────────────────────────────────
 
-function Field({
+export function Field({
   label,
   hint,
   children,
@@ -227,13 +246,13 @@ const inputClass =
   "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#F5FAF7] placeholder-[#4A6358] " +
   "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors";
 
-function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input {...props} className={`${inputClass} ${props.className ?? ""}`} />
   );
 }
 
-function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
       {...props}
@@ -242,7 +261,7 @@ function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   );
 }
 
-function Select(
+export function Select(
   props: React.SelectHTMLAttributes<HTMLSelectElement> & {
     children: React.ReactNode;
   },
@@ -274,7 +293,7 @@ function SectionCard({
   );
 }
 
-function IconButton({
+export function IconButton({
   onClick,
   disabled,
   title,
@@ -519,7 +538,21 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
           contentEn: lesson.contentEn,
           contentFr: lesson.contentFr,
           videoUrl: lesson.videoUrl.trim() || null,
+          codeLanguage: lesson.codeLanguage,
+          codeStarterEn: lesson.codeStarterEn,
+          codeStarterFr: lesson.codeStarterFr,
           position: li,
+          quizQuestions: lesson.quizQuestions.map((q, qi) => ({
+            id: q.id,
+            questionEn: q.questionEn.trim(),
+            questionFr: q.questionFr.trim(),
+            optionsEn: q.optionsEn.map((s) => s.trim()).filter(Boolean),
+            optionsFr: q.optionsFr.map((s) => s.trim()).filter(Boolean),
+            correctIndex: q.correctIndex,
+            explanationEn: q.explanationEn.trim(),
+            explanationFr: q.explanationFr.trim(),
+            position: qi,
+          })),
         })),
       })),
       lang,
@@ -1000,6 +1033,20 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                       </div>
                     )}
 
+                    {lesson.lessonType === "code" && (
+                      <div className="pl-7">
+                        <CodeLessonEditor
+                          codeLanguage={lesson.codeLanguage}
+                          codeStarterEn={lesson.codeStarterEn}
+                          codeStarterFr={lesson.codeStarterFr}
+                          onChange={(patch) =>
+                            updateLesson(module.key, lesson.key, patch)
+                          }
+                          lang={lang}
+                        />
+                      </div>
+                    )}
+
                     <div className="pl-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Field
                         label={t("admin.courses.editor.lessonContentEn", lang)}
@@ -1028,6 +1075,20 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                         />
                       </Field>
                     </div>
+
+                    {lesson.lessonType === "quiz" && (
+                      <div className="pl-7">
+                        <QuizQuestionEditor
+                          questions={lesson.quizQuestions}
+                          onChange={(quizQuestions) =>
+                            updateLesson(module.key, lesson.key, {
+                              quizQuestions,
+                            })
+                          }
+                          lang={lang}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

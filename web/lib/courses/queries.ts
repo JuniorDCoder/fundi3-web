@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
+  CodeLanguage,
   CourseLevel,
   CourseLanguageMode,
   CourseStatus,
@@ -7,6 +8,7 @@ import type {
   DbCourse,
   DbCourseLesson,
   DbCourseModule,
+  DbQuizQuestion,
   LessonType,
 } from "./types";
 
@@ -52,6 +54,21 @@ interface ModuleRow {
   course_lessons?: LessonRow[] | null;
 }
 
+interface QuizQuestionRow {
+  id: string;
+  lesson_id: string;
+  question_en: string;
+  question_fr: string;
+  options_en: string[] | null;
+  options_fr: string[] | null;
+  correct_index: number;
+  explanation_en: string;
+  explanation_fr: string;
+  position: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface LessonRow {
   id: string;
   module_id: string;
@@ -62,13 +79,34 @@ interface LessonRow {
   content_en: string;
   content_fr: string;
   video_url: string | null;
+  code_language: string | null;
+  code_starter_en: string | null;
+  code_starter_fr: string | null;
   position: number;
   created_at: string;
   updated_at: string;
+  quiz_questions?: QuizQuestionRow[] | null;
 }
 
 const COURSE_TREE_SELECT =
-  "*, course_modules(*, course_lessons(*))";
+  "*, course_modules(*, course_lessons(*, quiz_questions(*)))";
+
+function mapQuizQuestion(row: QuizQuestionRow): DbQuizQuestion {
+  return {
+    id: row.id,
+    lessonId: row.lesson_id,
+    questionEn: row.question_en,
+    questionFr: row.question_fr,
+    optionsEn: row.options_en ?? [],
+    optionsFr: row.options_fr ?? [],
+    correctIndex: row.correct_index,
+    explanationEn: row.explanation_en,
+    explanationFr: row.explanation_fr,
+    position: row.position,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
 
 function mapLesson(row: LessonRow): DbCourseLesson {
   return {
@@ -81,9 +119,15 @@ function mapLesson(row: LessonRow): DbCourseLesson {
     contentEn: row.content_en,
     contentFr: row.content_fr,
     videoUrl: row.video_url,
+    codeLanguage: row.code_language as CodeLanguage | null,
+    codeStarterEn: row.code_starter_en,
+    codeStarterFr: row.code_starter_fr,
     position: row.position,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    quizQuestions: [...(row.quiz_questions ?? [])]
+      .sort((a, b) => a.position - b.position)
+      .map(mapQuizQuestion),
   };
 }
 
@@ -317,22 +361,44 @@ export async function saveCourseTree(
       .single();
     if (moduleError) throw moduleError;
 
-    if (moduleInput.lessons.length === 0) continue;
+    for (const lesson of moduleInput.lessons) {
+      const { data: lessonRow, error: lessonError } = await admin
+        .from("course_lessons")
+        .insert({
+          module_id: moduleRow.id as string,
+          title_en: lesson.titleEn,
+          title_fr: lesson.titleFr,
+          duration_label: lesson.durationLabel,
+          lesson_type: lesson.lessonType,
+          content_en: lesson.contentEn,
+          content_fr: lesson.contentFr,
+          video_url: lesson.videoUrl,
+          code_language: lesson.codeLanguage,
+          code_starter_en: lesson.codeStarterEn || null,
+          code_starter_fr: lesson.codeStarterFr || null,
+          position: lesson.position,
+        })
+        .select("id")
+        .single();
+      if (lessonError) throw lessonError;
 
-    const { error: lessonsError } = await admin.from("course_lessons").insert(
-      moduleInput.lessons.map((lesson) => ({
-        module_id: moduleRow.id as string,
-        title_en: lesson.titleEn,
-        title_fr: lesson.titleFr,
-        duration_label: lesson.durationLabel,
-        lesson_type: lesson.lessonType,
-        content_en: lesson.contentEn,
-        content_fr: lesson.contentFr,
-        video_url: lesson.videoUrl,
-        position: lesson.position,
-      })),
-    );
-    if (lessonsError) throw lessonsError;
+      if (lesson.quizQuestions.length > 0) {
+        const { error: quizError } = await admin.from("quiz_questions").insert(
+          lesson.quizQuestions.map((q, qi) => ({
+            lesson_id: lessonRow.id as string,
+            question_en: q.questionEn,
+            question_fr: q.questionFr,
+            options_en: q.optionsEn,
+            options_fr: q.optionsFr,
+            correct_index: q.correctIndex,
+            explanation_en: q.explanationEn,
+            explanation_fr: q.explanationFr,
+            position: q.position ?? qi,
+          })),
+        );
+        if (quizError) throw quizError;
+      }
+    }
   }
 
   const saved = await getCourseById(admin, courseId);

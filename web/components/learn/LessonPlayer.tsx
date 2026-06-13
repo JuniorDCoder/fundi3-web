@@ -20,6 +20,9 @@ import { useCourseProgress } from "@/hooks/useCourseProgress";
 import { CurriculumTree } from "./CurriculumTree";
 import { NotesPanel } from "./NotesPanel";
 import { CertClaimSection } from "./CertClaimSection";
+import { QuizBlock } from "./QuizBlock";
+import { VideoEmbed } from "./VideoEmbed";
+import { CodePlayground } from "./CodePlayground";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { t } from "@/lib/i18n";
 import type { LocalizedCourse, LocalizedLesson } from "@/lib/courses/types";
@@ -42,6 +45,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   const { user } = useAuth();
   const { summary, loading, isCompleted, setLessonStatus, ensureEnrolled } = useCourseProgress(course.slug);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [quizPassed, setQuizPassed] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const ordered = useMemo(
@@ -53,6 +57,15 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   const nextLesson = currentIndex >= 0 && currentIndex < ordered.length - 1 ? ordered[currentIndex + 1] : null;
   const isLastLesson = currentIndex === ordered.length - 1;
   const done = isCompleted(lesson.id);
+  const lessonTypeKey = LESSON_TYPE_KEYS[lesson.lessonType];
+  const hasVideo = lesson.lessonType === "video" && !!lesson.videoUrl;
+  const hasCode = lesson.lessonType === "code" && !!lesson.codeLanguage;
+  const hasQuiz = lesson.lessonType === "quiz" && lesson.quiz.length > 0;
+  const canProceed = !(hasQuiz && !quizPassed);
+  const showComingSoon =
+    (lesson.lessonType === "video" && !hasVideo) ||
+    (lesson.lessonType === "quiz" && !hasQuiz) ||
+    (lesson.lessonType === "code" && !hasCode);
 
   // Silent, idempotent enroll on first view — backs the "just start learning" UX (no separate enroll step).
   useEffect(() => {
@@ -63,6 +76,12 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   useEffect(() => {
     setSidebarOpen(false);
   }, [lesson.id]);
+
+  // Quiz lessons stay locked until answered correctly; seed from existing progress
+  // so a previously-passed quiz doesn't re-lock the lesson on revisit.
+  useEffect(() => {
+    setQuizPassed(isCompleted(lesson.id));
+  }, [lesson.id, isCompleted]);
 
   const completeLesson = useCallback(async () => {
     if (isCompleted(lesson.id)) return;
@@ -83,7 +102,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   // near its end, treat the lesson as read and mark it complete automatically.
   useEffect(() => {
     const node = sentinelRef.current;
-    if (!node || done || loading) return;
+    if (!node || done || loading || (hasQuiz && !quizPassed)) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -96,7 +115,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [lesson.id, done, loading, completeLesson]);
+  }, [lesson.id, done, loading, completeLesson, hasQuiz, quizPassed]);
 
   async function toggleComplete() {
     if (done) {
@@ -120,8 +139,6 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
         return { type: "paragraph", text: block };
       });
   }, [lesson.content]);
-
-  const lessonTypeKey = LESSON_TYPE_KEYS[lesson.lessonType];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0A0F0E", color: "#F5FAF7" }}>
@@ -173,6 +190,15 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
 
           {loading && !summary ? (
             <Skeleton className="h-9 w-32 rounded-xl shrink-0" />
+          ) : hasQuiz && !quizPassed ? (
+            <span
+              className="inline-flex items-center gap-2 font-body font-medium text-sm px-4 py-2 rounded-xl border shrink-0 opacity-60 cursor-not-allowed"
+              style={{ backgroundColor: "rgba(255,255,255,0.03)", borderColor: "#1E2E28", color: "#4A6358" }}
+              title={t("learn.quizLocked", lang)}
+            >
+              <CheckCircle2 size={16} />
+              <span className="hidden sm:inline">{t("learn.quizLockedShort", lang)}</span>
+            </span>
           ) : (
             <button
               onClick={toggleComplete}
@@ -263,7 +289,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
               <h1 className="font-heading font-semibold text-2xl sm:text-3xl leading-tight">{lesson.title}</h1>
             </div>
 
-            {lessonTypeKey && (
+            {showComingSoon && lessonTypeKey && (
               <div
                 className="flex items-start gap-3 rounded-xl border px-4 py-3"
                 style={{ backgroundColor: "rgba(239,159,39,0.08)", borderColor: "#1E2E28" }}
@@ -300,6 +326,26 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
               )}
             </div>
 
+            {hasVideo && <VideoEmbed url={lesson.videoUrl!} title={lesson.title} />}
+
+            {hasCode && (
+              <CodePlayground
+                codeLanguage={lesson.codeLanguage!}
+                codeStarter={lesson.codeStarter}
+                title={lesson.title}
+              />
+            )}
+
+            {hasQuiz && (
+              <QuizBlock
+                questions={lesson.quiz}
+                onPassed={() => {
+                  setQuizPassed(true);
+                  void completeLesson();
+                }}
+              />
+            )}
+
             {/* Auto-complete sentinel — fires once this scrolls into view near the end of the lesson */}
             <div ref={sentinelRef} aria-hidden className="h-px w-full" />
           </motion.article>
@@ -328,7 +374,16 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
               <span />
             )}
 
-            {nextLesson ? (
+            {!canProceed ? (
+              <span
+                className="inline-flex items-center justify-end gap-2 font-body font-medium text-sm px-5 py-3 rounded-xl opacity-50 cursor-not-allowed"
+                style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "#4A6358" }}
+                title={t("learn.quizLocked", lang)}
+              >
+                {t("learn.quizLocked", lang)}
+                <ChevronRight size={16} />
+              </span>
+            ) : nextLesson ? (
               <Link
                 href={`/learn/${course.slug}/${nextLesson.id}`}
                 className="inline-flex items-center justify-end gap-2 font-body font-medium text-sm px-5 py-3 rounded-xl transition-transform hover:scale-[1.02]"

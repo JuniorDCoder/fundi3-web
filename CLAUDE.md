@@ -424,7 +424,7 @@ Show success state with green checkmark and thank you message.
 - Twitter/X: @fundi3hq
 - Email: hello@fundi3.xyz
 - Discord: discord.gg/fundi3 (community)
-- Location: Buea, Cameroon 🇨🇲
+- Location: Bamenda, Cameroon 🇨🇲
 
 **4. FAQ accordion (bottom of page):**
 

@@ -9,6 +9,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";
 import { Switch } from "@/components/ui/Switch";
 import { SkeletonForm } from "@/components/ui/Skeleton";
+import { GitHubConnectCard } from "@/components/dashboard/GitHubConnectCard";
 
 interface NotificationPreferences {
   emailCourseCompleted: boolean;
@@ -131,6 +132,18 @@ export default function SettingsPage() {
             />
           </div>
         ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="max-w-xl space-y-4 mt-10"
+      >
+        <h2 className="font-heading font-semibold text-lg" style={{ color: "#F5FAF7" }}>
+          {t("settings.connectedAccountsTitle", lang)}
+        </h2>
+        <GitHubConnectCard />
       </motion.div>
     </div>
   );

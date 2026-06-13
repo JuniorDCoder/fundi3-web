@@ -18,13 +18,7 @@ interface FormState {
 
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
 
-function FaqItem({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) {
+function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -33,7 +27,10 @@ function FaqItem({
         onClick={() => setOpen((o) => !o)}
         className="flex items-center justify-between w-full py-4 text-left gap-4"
       >
-        <span className="font-body font-medium text-sm" style={{ color: "#F5FAF7" }}>
+        <span
+          className="font-body font-medium text-sm"
+          style={{ color: "#F5FAF7" }}
+        >
           {question}
         </span>
         <motion.span
@@ -55,7 +52,10 @@ function FaqItem({
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-4 font-body text-sm leading-relaxed" style={{ color: "#4A6358" }}>
+            <p
+              className="pb-4 font-body text-sm leading-relaxed"
+              style={{ color: "#4A6358" }}
+            >
               {answer}
             </p>
           </motion.div>
@@ -79,11 +79,15 @@ export default function ContactPage() {
     message: "",
     langPref: lang,
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   }
@@ -107,7 +111,9 @@ export default function ContactPage() {
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Server error. Please try again.");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Server error. Please try again.",
+      );
     }
   }
 
@@ -153,7 +159,6 @@ export default function ContactPage() {
       <section className="pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-
             {/* Contact form */}
             <div className="lg:col-span-2">
               {status === "success" ? (
@@ -204,7 +209,10 @@ export default function ContactPage() {
 
                   {/* Subject */}
                   <div className="space-y-1.5">
-                    <label className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.6)" }}>
+                    <label
+                      className="font-body font-medium text-sm"
+                      style={{ color: "rgba(245,250,247,0.6)" }}
+                    >
                       {t("contact.form.subject", lang)}
                     </label>
                     <select
@@ -220,7 +228,9 @@ export default function ContactPage() {
                         color: form.subject ? "#F5FAF7" : "#4A6358",
                       }}
                     >
-                      <option value="">{lang === "fr" ? "Sélectionner…" : "Select…"}</option>
+                      <option value="">
+                        {lang === "fr" ? "Sélectionner…" : "Select…"}
+                      </option>
                       {subjects.map((s) => (
                         <option key={s} value={s}>
                           {s}
@@ -231,7 +241,10 @@ export default function ContactPage() {
 
                   {/* Message */}
                   <div className="space-y-1.5">
-                    <label className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.6)" }}>
+                    <label
+                      className="font-body font-medium text-sm"
+                      style={{ color: "rgba(245,250,247,0.6)" }}
+                    >
                       {t("contact.form.message", lang)} *
                     </label>
                     <textarea
@@ -253,7 +266,10 @@ export default function ContactPage() {
 
                   {/* Language preference */}
                   <div className="space-y-2">
-                    <p className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.6)" }}>
+                    <p
+                      className="font-body font-medium text-sm"
+                      style={{ color: "rgba(245,250,247,0.6)" }}
+                    >
                       {t("contact.form.langPref", lang)}
                     </p>
                     <div className="flex gap-3">
@@ -261,11 +277,15 @@ export default function ContactPage() {
                         <button
                           key={l}
                           type="button"
-                          onClick={() => setForm((f) => ({ ...f, langPref: l }))}
+                          onClick={() =>
+                            setForm((f) => ({ ...f, langPref: l }))
+                          }
                           className="px-4 py-2 rounded-lg font-mono text-xs font-medium transition-colors border"
                           style={{
-                            backgroundColor: form.langPref === l ? "#0F6E56" : "transparent",
-                            borderColor: form.langPref === l ? "#0F6E56" : "#1E2E28",
+                            backgroundColor:
+                              form.langPref === l ? "#0F6E56" : "transparent",
+                            borderColor:
+                              form.langPref === l ? "#0F6E56" : "#1E2E28",
                             color: form.langPref === l ? "#F5FAF7" : "#4A6358",
                           }}
                         >
@@ -277,7 +297,10 @@ export default function ContactPage() {
 
                   {/* Error */}
                   {status === "error" && (
-                    <p className="font-body text-sm" style={{ color: "#ff6b4a" }}>
+                    <p
+                      className="font-body text-sm"
+                      style={{ color: "#ff6b4a" }}
+                    >
                       {errorMsg}
                     </p>
                   )}
@@ -352,8 +375,11 @@ export default function ContactPage() {
                 </p>
                 <div className="flex items-center gap-2">
                   <MapPin size={14} style={{ color: "#4A6358" }} />
-                  <span className="font-body font-medium text-sm" style={{ color: "#F5FAF7" }}>
-                    Buea, Cameroon 🇨🇲
+                  <span
+                    className="font-body font-medium text-sm"
+                    style={{ color: "#F5FAF7" }}
+                  >
+                    Bamenda, Cameroon 🇨🇲
                   </span>
                 </div>
               </div>
@@ -408,7 +434,10 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="font-body font-medium text-sm" style={{ color: "rgba(245,250,247,0.6)" }}>
+      <label
+        className="font-body font-medium text-sm"
+        style={{ color: "rgba(245,250,247,0.6)" }}
+      >
         {label} {required && "*"}
       </label>
       <input

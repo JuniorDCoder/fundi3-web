@@ -1,0 +1,15 @@
+/contracts
+
+# Solana / Anchor build artifacts (contracts/)
+/contracts/target
+/contracts/.anchor
+/contracts/node_modules
+/contracts/test-ledger
+/contracts/.yarn
+
+# mobile app folder
+/mobile
+
+# misc
+.DS_Store
+*.pem

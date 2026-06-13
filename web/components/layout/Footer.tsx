@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoFull } from "@/components/brand/Logo";
 import { useLanguage } from "@/hooks/useLanguage";
+import { isChromeHidden } from "@/lib/layout/chrome";
 import { t } from "@/lib/i18n";
 
 // ─── Social icons (inline SVG — lucide-react v1.x doesn't ship these) ────────
@@ -38,8 +39,8 @@ export function Footer() {
   const { lang } = useLanguage();
   const pathname = usePathname();
 
-  // The /admin area renders its own shell — skip the public footer entirely.
-  if (pathname?.startsWith("/admin")) return null;
+  // /admin, /embed and /connect render their own shells — skip the public footer entirely.
+  if (isChromeHidden(pathname)) return null;
 
   const courseLinks = [
     { href: "/courses", label: t("courses.course1.title", lang) },

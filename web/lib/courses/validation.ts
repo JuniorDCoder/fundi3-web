@@ -1,8 +1,10 @@
 import {
+  CODE_LANGUAGES,
   COURSE_LANGUAGE_MODES,
   COURSE_LEVELS,
   COURSE_STATUSES,
   LESSON_TYPES,
+  type CodeLanguage,
   type CourseLanguageMode,
   type CourseLevel,
   type CourseStatus,
@@ -10,6 +12,7 @@ import {
   type CourseModuleInput,
   type CourseTreeInput,
   type LessonType,
+  type QuizQuestionInput,
 } from "./types";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -43,6 +46,46 @@ function asEnum<T extends string>(
     : null;
 }
 
+const QUIZ_OPTIONS_MIN = 2;
+const QUIZ_OPTIONS_MAX = 6;
+
+function parseQuizQuestion(
+  raw: unknown,
+  fallbackPosition: number,
+): QuizQuestionInput | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+
+  if (!isNonEmptyString(r.questionEn) || !isNonEmptyString(r.questionFr)) return null;
+
+  const optionsEn = asStringArray(r.optionsEn);
+  const optionsFr = asStringArray(r.optionsFr);
+  if (!optionsEn || !optionsFr) return null;
+  if (optionsEn.length < QUIZ_OPTIONS_MIN || optionsEn.length > QUIZ_OPTIONS_MAX) return null;
+  if (optionsEn.length !== optionsFr.length) return null;
+
+  if (
+    typeof r.correctIndex !== "number" ||
+    !Number.isInteger(r.correctIndex) ||
+    r.correctIndex < 0 ||
+    r.correctIndex >= optionsEn.length
+  ) {
+    return null;
+  }
+
+  return {
+    id: typeof r.id === "string" && r.id.trim() ? r.id.trim() : undefined,
+    questionEn: r.questionEn.trim(),
+    questionFr: r.questionFr.trim(),
+    optionsEn,
+    optionsFr,
+    correctIndex: r.correctIndex,
+    explanationEn: asString(r.explanationEn).trim(),
+    explanationFr: asString(r.explanationFr).trim(),
+    position: typeof r.position === "number" ? r.position : fallbackPosition,
+  };
+}
+
 function parseLesson(
   raw: unknown,
   fallbackPosition: number,
@@ -60,6 +103,16 @@ function parseLesson(
       ? r.videoUrl.trim()
       : null;
 
+  const codeLanguage = asEnum<CodeLanguage>(r.codeLanguage, CODE_LANGUAGES);
+
+  const quizQuestionsRaw = Array.isArray(r.quizQuestions) ? r.quizQuestions : [];
+  const quizQuestions: QuizQuestionInput[] = [];
+  for (let i = 0; i < quizQuestionsRaw.length; i++) {
+    const question = parseQuizQuestion(quizQuestionsRaw[i], i);
+    if (!question) return null;
+    quizQuestions.push(question);
+  }
+
   return {
     id: typeof r.id === "string" && r.id.trim() ? r.id.trim() : undefined,
     titleEn: r.titleEn.trim(),
@@ -69,7 +122,11 @@ function parseLesson(
     contentEn: asString(r.contentEn),
     contentFr: asString(r.contentFr),
     videoUrl,
+    codeLanguage,
+    codeStarterEn: asString(r.codeStarterEn).trim(),
+    codeStarterFr: asString(r.codeStarterFr).trim(),
     position: typeof r.position === "number" ? r.position : fallbackPosition,
+    quizQuestions,
   };
 }
 
