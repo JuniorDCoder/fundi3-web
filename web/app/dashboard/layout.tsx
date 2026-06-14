@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Award, User, Settings, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Award, Wallet, User, Settings, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";
 
 const TABS: { href: string; labelKey: string; icon: LucideIcon }[] = [
   { href: "/dashboard", labelKey: "dashboard.navOverview", icon: LayoutDashboard },
   { href: "/dashboard/certificates", labelKey: "dashboard.navCertificates", icon: Award },
+  { href: "/dashboard/wallet", labelKey: "dashboard.navWallet", icon: Wallet },
   { href: "/dashboard/profile", labelKey: "dashboard.navProfile", icon: User },
   { href: "/dashboard/settings", labelKey: "dashboard.navSettings", icon: Settings },
 ];

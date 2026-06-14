@@ -23,6 +23,7 @@ import { CertClaimSection } from "./CertClaimSection";
 import { QuizBlock } from "./QuizBlock";
 import { VideoEmbed } from "./VideoEmbed";
 import { CodePlayground } from "./CodePlayground";
+import { LessonMarkdown } from "./LessonMarkdown";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { t } from "@/lib/i18n";
 import type { LocalizedCourse, LocalizedLesson } from "@/lib/courses/types";
@@ -31,8 +32,6 @@ interface LessonPlayerProps {
   course: LocalizedCourse;
   lesson: LocalizedLesson;
 }
-
-type ContentBlock = { type: "paragraph"; text: string } | { type: "image"; alt: string; src: string };
 
 const LESSON_TYPE_KEYS: Record<string, string> = {
   video: "learn.lessonTypeVideo",
@@ -47,6 +46,10 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  // Guards against the auto-complete observer (and quiz/manual triggers) re-firing
+  // completeLesson for the same lesson while the optimistic progress update is
+  // still in flight — without this, multiple "Lesson completed" toasts can stack.
+  const completingRef = useRef<Set<string>>(new Set());
 
   const ordered = useMemo(
     () => course.modules.flatMap((courseModule) => courseModule.lessons),
@@ -84,19 +87,26 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
   }, [lesson.id, isCompleted]);
 
   const completeLesson = useCallback(async () => {
-    if (isCompleted(lesson.id)) return;
-    await setLessonStatus(lesson.id, "completed");
-    toast.success(t("toast.lessonCompleted", lang), {
-      description: t("toast.lessonCompletedDesc", lang),
-      icon: <CheckCircle2 size={16} className="text-accent" />,
-    });
-    if (isLastLesson) {
-      toast.success(t("learn.courseComplete", lang), {
-        description: t("learn.courseCompleteBody", lang),
-        icon: <PartyPopper size={16} className="text-secondary" />,
+    if (isCompleted(lesson.id) || completingRef.current.has(lesson.id)) return;
+    completingRef.current.add(lesson.id);
+    try {
+      await setLessonStatus(lesson.id, "completed");
+      toast.success(t("toast.lessonCompleted", lang), {
+        id: `lesson-completed-${lesson.id}`,
+        description: t("toast.lessonCompletedDesc", lang),
+        icon: <CheckCircle2 size={16} className="text-accent" />,
       });
+      if (isLastLesson) {
+        toast.success(t("learn.courseComplete", lang), {
+          id: `course-completed-${course.id}`,
+          description: t("learn.courseCompleteBody", lang),
+          icon: <PartyPopper size={16} className="text-secondary" />,
+        });
+      }
+    } finally {
+      completingRef.current.delete(lesson.id);
     }
-  }, [isCompleted, lesson.id, setLessonStatus, lang, isLastLesson]);
+  }, [isCompleted, lesson.id, setLessonStatus, lang, isLastLesson, course.id]);
 
   // Auto-complete heuristic: once the reader scrolls the lesson content into view
   // near its end, treat the lesson as read and mark it complete automatically.
@@ -124,21 +134,6 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
       await completeLesson();
     }
   }
-
-  const contentBlocks = useMemo(() => {
-    const imageSyntax = /^!\[([^\]]*)\]\(([^)]+)\)$/;
-    return lesson.content
-      .split(/\n{2,}/)
-      .map((block) => block.trim())
-      .filter(Boolean)
-      .map((block): ContentBlock => {
-        const match = block.match(imageSyntax);
-        if (match) {
-          return { type: "image", alt: match[1], src: match[2] };
-        }
-        return { type: "paragraph", text: block };
-      });
-  }, [lesson.content]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0A0F0E", color: "#F5FAF7" }}>
@@ -301,30 +296,7 @@ export function LessonPlayer({ course, lesson }: LessonPlayerProps) {
               </div>
             )}
 
-            <div className="space-y-4 font-body text-base leading-relaxed" style={{ color: "rgba(245,250,247,0.82)" }}>
-              {contentBlocks.map((block, i) =>
-                block.type === "image" ? (
-                  <figure
-                    key={i}
-                    className="rounded-2xl border overflow-hidden"
-                    style={{ borderColor: "#1E2E28", backgroundColor: "rgba(255,255,255,0.02)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={block.src} alt={block.alt} loading="lazy" className="w-full h-auto block" />
-                    {block.alt && (
-                      <figcaption
-                        className="px-4 py-3 font-body text-xs text-center leading-relaxed"
-                        style={{ color: "#4A6358" }}
-                      >
-                        {block.alt}
-                      </figcaption>
-                    )}
-                  </figure>
-                ) : (
-                  <p key={i}>{block.text}</p>
-                ),
-              )}
-            </div>
+            <LessonMarkdown content={lesson.content} />
 
             {hasVideo && <VideoEmbed url={lesson.videoUrl!} title={lesson.title} />}
 

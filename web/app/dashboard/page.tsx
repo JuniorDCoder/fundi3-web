@@ -149,9 +149,19 @@ export default function DashboardPage() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10"
       >
-        <StatCard icon={<BookOpen size={20} />} label={t("dashboard.coursesEnrolled", lang)} value={stats.coursesEnrolled} />
-        <StatCard icon={<GraduationCap size={20} />} label={t("dashboard.lessonsCompleted", lang)} value={stats.lessonsCompleted} />
-        <StatCard icon={<Trophy size={20} />} label={t("dashboard.certificatesEarned", lang)} value={stats.certificatesEarned} />
+        {progressLoading ? (
+          <>
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </>
+        ) : (
+          <>
+            <StatCard icon={<BookOpen size={20} />} label={t("dashboard.coursesEnrolled", lang)} value={stats.coursesEnrolled} />
+            <StatCard icon={<GraduationCap size={20} />} label={t("dashboard.lessonsCompleted", lang)} value={stats.lessonsCompleted} />
+            <StatCard icon={<Trophy size={20} />} label={t("dashboard.certificatesEarned", lang)} value={stats.certificatesEarned} />
+          </>
+        )}
       </motion.div>
 
       {progressLoading && (

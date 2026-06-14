@@ -7,7 +7,7 @@ import { Award, ArrowLeft, ExternalLink, ChevronRight, Download } from "lucide-r
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { t, type Lang } from "@/lib/i18n";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { Skeleton, SkeletonCertCard } from "@/components/ui/Skeleton";
 
 interface CertItem {
   id: string;
@@ -67,7 +67,7 @@ export default function CertificatesPage() {
       {loading && (
         <div className="space-y-4">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+            <SkeletonCertCard key={i} />
           ))}
         </div>
       )}
@@ -189,7 +189,7 @@ function CertificatesLoading() {
     <div className="max-w-4xl mx-auto px-4 pb-16 space-y-4">
       <Skeleton className="h-10 w-56 rounded-xl" />
       {[0, 1, 2].map((i) => (
-        <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+        <SkeletonCertCard key={i} />
       ))}
     </div>
   );

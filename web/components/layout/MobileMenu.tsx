@@ -20,6 +20,8 @@ interface MobileMenuProps {
   toggleLang: () => void;
   ctaHref: string;
   ctaLabel: string;
+  signInHref?: string;
+  signInLabel?: string;
 }
 
 export function MobileMenu({
@@ -30,6 +32,8 @@ export function MobileMenu({
   toggleLang,
   ctaHref,
   ctaLabel,
+  signInHref,
+  signInLabel,
 }: MobileMenuProps) {
   // Lock body scroll while drawer is open
   useEffect(() => {
@@ -110,6 +114,18 @@ export function MobileMenu({
                 {lang === "fr" ? "Switch to English" : "Passer en français"}
               </span>
             </button>
+
+            {/* Sign In (signed-out users only) */}
+            {signInHref && (
+              <Link
+                href={signInHref}
+                onClick={onClose}
+                className="flex items-center justify-center w-full py-4 rounded-xl border font-heading font-semibold text-lg transition-colors"
+                style={{ borderColor: "#1E2E28", color: "#F5FAF7" }}
+              >
+                {signInLabel}
+              </Link>
+            )}
 
             {/* CTA */}
             <Link

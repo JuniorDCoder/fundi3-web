@@ -191,6 +191,29 @@ export function SkeletonCourseProgressCard() {
   );
 }
 
+// ─── Certificates ─────────────────────────────────────────────────────────────
+
+/** Mirrors CertRow — icon chip, title/meta lines, action button row. */
+export function SkeletonCertCard() {
+  return (
+    <div
+      className="rounded-2xl border p-5 flex items-center gap-5"
+      style={{ borderColor: "rgba(239,159,39,0.12)", backgroundColor: "rgba(239,159,39,0.03)" }}
+    >
+      <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
+      <div className="flex-1 min-w-0 space-y-2">
+        <Skeleton className="h-4 w-1/2 max-w-xs" />
+        <Skeleton className="h-3 w-40" />
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <Skeleton className="h-8 w-16 rounded-lg" />
+        <Skeleton className="h-8 w-24 rounded-lg" />
+        <Skeleton className="h-8 w-20 rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
 // ─── Admin tables & forms ─────────────────────────────────────────────────────
 
 /** Generic skeleton table rows — used by admin list pages (admins, courses) while data loads. */

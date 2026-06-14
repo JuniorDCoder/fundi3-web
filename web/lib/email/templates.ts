@@ -38,7 +38,7 @@ function wrapper(lang: Lang, title: string, bodyHtml: string) {
               <td style="padding:20px 32px;border-top:1px solid ${brand.border};">
                 <p style="margin:0;font-size:12px;color:${brand.muted};">
                   Fundi3 — Web3, Enfin Clair. / Web3, Finally Clear.<br/>
-                  Buea, Cameroun 🇨🇲
+                  Bamenda, Cameroun 🇨🇲
                 </p>
               </td>
             </tr>

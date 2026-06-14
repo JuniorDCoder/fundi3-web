@@ -90,6 +90,20 @@ export function Navbar() {
                 {t("nav.langToggle", lang)}
               </button>
 
+              {/* Sign In link (desktop only, signed-out users) */}
+              {!user && (
+                <Link
+                  href="/auth/login"
+                  className="hidden md:flex items-center font-body font-medium text-sm px-4 py-2 rounded-lg border transition-colors hover:border-white/20"
+                  style={{
+                    borderColor: "rgba(255,255,255,0.08)",
+                    color: "rgba(245,250,247,0.85)",
+                  }}
+                >
+                  {t("nav.signIn", lang)}
+                </Link>
+              )}
+
               {/* CTA button (desktop only) */}
               <Link
                 href={ctaHref}
@@ -121,6 +135,8 @@ export function Navbar() {
         toggleLang={toggleLang}
         ctaHref={ctaHref}
         ctaLabel={ctaLabel}
+        signInHref={!user ? "/auth/login" : undefined}
+        signInLabel={t("nav.signIn", lang)}
       />
     </>
   );

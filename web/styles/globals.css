@@ -188,6 +188,112 @@
 .doc-content tr:last-child td { border-bottom: none; }
 .doc-content table { border: 1px solid #1E2E28; border-radius: 0.75rem; overflow: hidden; }
 
+/* ── Lesson prose styles (LessonMarkdown) ─────────────────────────────────── */
+.lesson-content {
+  color: rgba(245, 250, 247, 0.82);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.lesson-content > *:first-child { margin-top: 0; }
+.lesson-content > *:last-child { margin-bottom: 0; }
+
+.lesson-content p { margin-bottom: 1.25rem; }
+
+.lesson-content h1,
+.lesson-content h2,
+.lesson-content h3,
+.lesson-content h4 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-weight: 600;
+  color: #F5FAF7;
+}
+
+.lesson-content h1 { font-size: 1.5rem; margin-top: 2.25rem; margin-bottom: 1rem; }
+.lesson-content h2 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #1E2E28;
+}
+.lesson-content h3 { font-size: 1.0625rem; margin-top: 1.5rem; margin-bottom: 0.625rem; }
+.lesson-content h4 { font-size: 0.9375rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+
+.lesson-content ul, .lesson-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.375rem;
+}
+.lesson-content ul { list-style-type: disc; }
+.lesson-content ol { list-style-type: decimal; }
+.lesson-content li { margin-bottom: 0.4rem; }
+.lesson-content li::marker { color: #1D9E75; }
+.lesson-content li > ul, .lesson-content li > ol { margin-top: 0.4rem; margin-bottom: 0.4rem; }
+
+.lesson-content strong { font-weight: 600; color: #F5FAF7; }
+.lesson-content em { font-style: italic; }
+
+.lesson-content a {
+  color: #1D9E75;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+.lesson-content a:hover { color: #9FE1CB; }
+
+/* Inline code — `like this` */
+.lesson-content :not(pre) > code {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.85em;
+  color: #9FE1CB;
+  background-color: rgba(29, 158, 117, 0.12);
+  padding: 0.15em 0.4em;
+  border-radius: 0.35rem;
+}
+
+.lesson-content blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #1D9E75;
+  background-color: rgba(15, 110, 86, 0.08);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgba(245, 250, 247, 0.75);
+}
+.lesson-content blockquote p:last-child { margin-bottom: 0; }
+
+.lesson-content hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #1E2E28;
+}
+
+.lesson-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  border: 1px solid #1E2E28;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.lesson-content th {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background-color: #111915;
+  color: rgba(245, 250, 247, 0.6);
+  border-bottom: 1px solid #1E2E28;
+}
+.lesson-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1E2E28;
+  color: rgba(245, 250, 247, 0.7);
+  vertical-align: top;
+}
+.lesson-content tr:last-child td { border-bottom: none; }
+
 /* ── Sonner toast theming — Fundi3 brand (dark glass) ─────────────────────
    Sonner injects its own dark-theme rule with the same specificity at
    runtime (after this stylesheet loads), so source order would let it win.

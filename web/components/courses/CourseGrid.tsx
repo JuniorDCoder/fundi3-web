@@ -13,15 +13,16 @@ interface CourseGridProps {
   courses: LocalizedCourse[];
   inView?: boolean;
   enrolledCourseIds?: Set<string>;
+  emptyMessage?: string;
 }
 
-export function CourseGrid({ courses, inView = true, enrolledCourseIds }: CourseGridProps) {
+export function CourseGrid({ courses, inView = true, enrolledCourseIds, emptyMessage }: CourseGridProps) {
   const { lang } = useLanguage();
 
   if (courses.length === 0) {
     return (
       <p className="font-body text-sm text-center py-16" style={{ color: "#4A6358" }}>
-        {t("courses.empty", lang)}
+        {emptyMessage ?? t("courses.empty", lang)}
       </p>
     );
   }

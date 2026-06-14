@@ -40,6 +40,7 @@ import {
   type EditorQuizQuestion,
 } from "./QuizQuestionEditor";
 import { CodeLessonEditor } from "./CodeLessonEditor";
+import { LessonContentEditor } from "./LessonContentEditor";
 
 let keyCounter = 0;
 export function nextKey(prefix: string): string {
@@ -1047,33 +1048,15 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
                       </div>
                     )}
 
-                    <div className="pl-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <Field
-                        label={t("admin.courses.editor.lessonContentEn", lang)}
-                      >
-                        <TextArea
-                          rows={3}
-                          value={lesson.contentEn}
-                          onChange={(e) =>
-                            updateLesson(module.key, lesson.key, {
-                              contentEn: e.target.value,
-                            })
-                          }
-                        />
-                      </Field>
-                      <Field
-                        label={t("admin.courses.editor.lessonContentFr", lang)}
-                      >
-                        <TextArea
-                          rows={3}
-                          value={lesson.contentFr}
-                          onChange={(e) =>
-                            updateLesson(module.key, lesson.key, {
-                              contentFr: e.target.value,
-                            })
-                          }
-                        />
-                      </Field>
+                    <div className="pl-7">
+                      <LessonContentEditor
+                        contentEn={lesson.contentEn}
+                        contentFr={lesson.contentFr}
+                        onChange={(patch) =>
+                          updateLesson(module.key, lesson.key, patch)
+                        }
+                        lang={lang}
+                      />
                     </div>
 
                     {lesson.lessonType === "quiz" && (

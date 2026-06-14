@@ -68,6 +68,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* Remix IDE is a heavy third-party app embedded in lesson code playgrounds —
+            warm up the connection ahead of time so it starts loading faster. */}
+        <link rel="preconnect" href="https://remix.ethereum.org" />
+        <link rel="dns-prefetch" href="https://remix.ethereum.org" />
+      </head>
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased bg-dark text-off-white`}
       >

@@ -30,12 +30,12 @@ export default function DocsIndexPage() {
 
         {/* Start here CTA */}
         <Link
-          href="/docs/what-is-blockchain"
+          href="/docs/what-is-fundi3"
           className="inline-flex items-center gap-2 font-body font-medium text-sm transition-colors hover:text-primary mt-2"
           style={{ color: "#0F6E56" }}
         >
           <BookOpen size={15} />
-          {lang === "fr" ? "Commencer : Qu'est-ce que la blockchain ?" : "Start here: What is blockchain?"}
+          {lang === "fr" ? "Commencer : Qu'est-ce que Fundi3 ?" : "Start here: What is Fundi3?"}
           <ArrowRight size={14} />
         </Link>
       </motion.div>
