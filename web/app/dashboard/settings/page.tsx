@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { GraduationCap, Sparkles, FileBadge, AlertCircle, type LucideIcon } from "lucide-react";
+import { GraduationCap, Sparkles, FileBadge, ArrowLeftRight, AlertCircle, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";
@@ -15,12 +15,14 @@ interface NotificationPreferences {
   emailCourseCompleted: boolean;
   emailNewCourse: boolean;
   emailCertificatePdf: boolean;
+  emailWalletActivity: boolean;
 }
 
 const DEFAULT_PREFERENCES: NotificationPreferences = {
   emailCourseCompleted: true,
   emailNewCourse: true,
   emailCertificatePdf: true,
+  emailWalletActivity: true,
 };
 
 interface ToggleRow {
@@ -34,6 +36,7 @@ const TOGGLES: ToggleRow[] = [
   { key: "emailCourseCompleted", icon: GraduationCap, labelKey: "settings.notifCourseCompleted", hintKey: "settings.notifCourseCompletedHint" },
   { key: "emailNewCourse", icon: Sparkles, labelKey: "settings.notifNewCourse", hintKey: "settings.notifNewCourseHint" },
   { key: "emailCertificatePdf", icon: FileBadge, labelKey: "settings.notifCertificatePdf", hintKey: "settings.notifCertificatePdfHint" },
+  { key: "emailWalletActivity", icon: ArrowLeftRight, labelKey: "settings.notifWalletActivity", hintKey: "settings.notifWalletActivityHint" },
 ];
 
 export default function SettingsPage() {

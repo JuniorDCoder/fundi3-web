@@ -16,7 +16,17 @@ export async function GET(request: NextRequest) {
   }
 
   const admin = createAdminClient();
-  const [totalUsers, admins] = await Promise.all([countAllUsers(admin), listAdminUsers(admin)]);
+  const [totalUsers, admins, coursesCount, certificatesCount] = await Promise.all([
+    countAllUsers(admin),
+    listAdminUsers(admin),
+    admin.from("courses").select("id", { count: "exact", head: true }).eq("status", "published"),
+    admin.from("certificates").select("id", { count: "exact", head: true }),
+  ]);
 
-  return NextResponse.json({ totalUsers, totalAdmins: admins.length });
+  return NextResponse.json({
+    totalUsers,
+    totalAdmins: admins.length,
+    totalCourses: coursesCount.count ?? 0,
+    totalCertificates: certificatesCount.count ?? 0,
+  });
 }

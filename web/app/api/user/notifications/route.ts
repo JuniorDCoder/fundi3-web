@@ -11,6 +11,7 @@ const PREFERENCE_KEYS: (keyof NotificationPreferences)[] = [
   "emailCourseCompleted",
   "emailNewCourse",
   "emailCertificatePdf",
+  "emailWalletActivity",
 ];
 
 export async function GET(request: NextRequest) {

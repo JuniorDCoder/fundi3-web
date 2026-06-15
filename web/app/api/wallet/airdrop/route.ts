@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getUserFromRequest } from "@/lib/supabase/get-user";
 import { deriveStudentPubkey } from "@/lib/certificates/solana";
-import { getSolanaNetwork, getRpcUrl } from "@/lib/wallet/solana";
+import { confirmSignature, getSolanaNetwork, getRpcUrl } from "@/lib/wallet/solana";
 
 // POST /api/wallet/airdrop
 // Devnet-only: sends 1 SOL from the public faucet to the user's wallet so
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const connection = new Connection(getRpcUrl(), "confirmed");
     const pubkey = deriveStudentPubkey(user.id);
     const signature = await connection.requestAirdrop(pubkey, LAMPORTS_PER_SOL);
-    await connection.confirmTransaction(signature, "confirmed");
+    await confirmSignature(connection, signature);
     return NextResponse.json({ signature });
   } catch {
     return NextResponse.json({ error: "airdrop_failed" }, { status: 502 });

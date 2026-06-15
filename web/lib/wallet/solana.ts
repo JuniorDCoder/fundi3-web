@@ -13,9 +13,12 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
-  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import { CERTIFICATE_PROGRAM_ID } from "@/lib/certificates/solana";
+
+// Reserve a little extra above any requested transfer to cover the network
+// fee (a single-signature transfer costs ~0.000005 SOL).
+export const WALLET_FEE_BUFFER_SOL = 0.00001;
 
 export type SolanaNetwork = "devnet" | "testnet" | "mainnet-beta";
 
@@ -152,6 +155,32 @@ export async function getRecentTransactions(pubkey: PublicKey, limit = 15): Prom
   }
 }
 
+/**
+ * Polls `getSignatureStatuses` (plain HTTP) until `signature` reaches
+ * "confirmed"/"finalized", fails on-chain, or `timeoutMs` elapses.
+ *
+ * Deliberately avoids `connection.confirmTransaction`, which subscribes via
+ * a WebSocket (`signatureSubscribe`) — Next.js's server bundling of `ws`
+ * breaks that path with "bufferUtil.mask is not a function", which made
+ * `sendSol` throw (and the send API report failure) even though the
+ * transaction had already landed on-chain.
+ */
+export async function confirmSignature(connection: Connection, signature: string, timeoutMs = 30_000): Promise<void> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const { value } = await connection.getSignatureStatuses([signature]);
+    const status = value[0];
+    if (status?.err) {
+      throw new Error(`Transaction failed: ${JSON.stringify(status.err)}`);
+    }
+    if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  throw new Error(`Timed out waiting for confirmation of ${signature}`);
+}
+
 export interface SendSolResult {
   signature: string;
   explorerUrl: string;
@@ -166,10 +195,14 @@ export async function sendSol(from: Keypair, toAddress: string, amountSol: numbe
   const toPubkey = new PublicKey(toAddress);
   const lamports = Math.round(amountSol * LAMPORTS_PER_SOL);
 
-  const tx = new Transaction().add(
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("confirmed");
+  const tx = new Transaction({ feePayer: from.publicKey, blockhash, lastValidBlockHeight }).add(
     SystemProgram.transfer({ fromPubkey: from.publicKey, toPubkey, lamports }),
   );
+  tx.sign(from);
 
-  const signature = await sendAndConfirmTransaction(connection, tx, [from], { commitment: "confirmed" });
+  const signature = await connection.sendRawTransaction(tx.serialize());
+  await confirmSignature(connection, signature);
+
   return { signature, explorerUrl: getTxExplorerUrl(signature) };
 }

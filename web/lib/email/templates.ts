@@ -212,6 +212,87 @@ export function certificatePdfEmail(lang: Lang, courseName: string) {
   };
 }
 
+function formatSol(amountSol: number): string {
+  return Number(amountSol.toFixed(4)).toString();
+}
+
+function shortenAddress(address: string): string {
+  if (address.length <= 10) return address;
+  return `${address.slice(0, 4)}…${address.slice(-4)}`;
+}
+
+export function walletSendEmail(lang: Lang, amountSol: number, recipient: string, explorerUrl: string) {
+  const amount = formatSol(amountSol);
+  const to = shortenAddress(recipient);
+
+  if (lang === "fr") {
+    return {
+      subject: `Vous avez envoyé ${amount} SOL`,
+      html: wrapper(
+        lang,
+        "SOL envoyé ✅",
+        `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+           Vous avez envoyé <strong>${amount} SOL</strong> à <strong>${to}</strong>.
+         </p>
+         <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+           Si ce n'était pas vous, contactez-nous immédiatement.
+         </p>
+         ${ctaButton(explorerUrl, "Voir la transaction")}`,
+      ),
+      text: `Vous avez envoyé ${amount} SOL à ${to}.\n\nVoir la transaction : ${explorerUrl}`,
+    };
+  }
+
+  return {
+    subject: `You sent ${amount} SOL`,
+    html: wrapper(
+      lang,
+      "SOL sent ✅",
+      `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+         You sent <strong>${amount} SOL</strong> to <strong>${to}</strong>.
+       </p>
+       <p style="margin:0 0 8px 0;font-size:13px;color:${brand.muted};">
+         If this wasn't you, contact us right away.
+       </p>
+       ${ctaButton(explorerUrl, "View transaction")}`,
+    ),
+    text: `You sent ${amount} SOL to ${to}.\n\nView transaction: ${explorerUrl}`,
+  };
+}
+
+export function walletReceiveEmail(lang: Lang, amountSol: number, sender: string | null, explorerUrl: string) {
+  const amount = formatSol(amountSol);
+  const from = sender ? shortenAddress(sender) : null;
+
+  if (lang === "fr") {
+    return {
+      subject: `Vous avez reçu ${amount} SOL`,
+      html: wrapper(
+        lang,
+        "SOL reçu 🎉",
+        `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+           ${from ? `Vous avez reçu <strong>${amount} SOL</strong> de <strong>${from}</strong>.` : `Vous avez reçu <strong>${amount} SOL</strong>.`}
+         </p>
+         ${ctaButton(explorerUrl, "Voir la transaction")}`,
+      ),
+      text: `Vous avez reçu ${amount} SOL${from ? ` de ${from}` : ""}.\n\nVoir la transaction : ${explorerUrl}`,
+    };
+  }
+
+  return {
+    subject: `You received ${amount} SOL`,
+    html: wrapper(
+      lang,
+      "SOL received 🎉",
+      `<p style="margin:0 0 8px 0;font-size:14px;color:${brand.white};opacity:0.85;">
+         ${from ? `You received <strong>${amount} SOL</strong> from <strong>${from}</strong>.` : `You received <strong>${amount} SOL</strong>.`}
+       </p>
+       ${ctaButton(explorerUrl, "View transaction")}`,
+    ),
+    text: `You received ${amount} SOL${from ? ` from ${from}` : ""}.\n\nView transaction: ${explorerUrl}`,
+  };
+}
+
 export function newCourseEmail(lang: Lang, courseTitle: string, courseUrl: string) {
   if (lang === "fr") {
     return {

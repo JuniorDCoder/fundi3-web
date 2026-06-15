@@ -4,18 +4,21 @@ export interface NotificationPreferences {
   emailCourseCompleted: boolean;
   emailNewCourse: boolean;
   emailCertificatePdf: boolean;
+  emailWalletActivity: boolean;
 }
 
 export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   emailCourseCompleted: true,
   emailNewCourse: true,
   emailCertificatePdf: true,
+  emailWalletActivity: true,
 };
 
 interface PreferencesRow {
   email_course_completed: boolean;
   email_new_course: boolean;
   email_certificate_pdf: boolean;
+  email_wallet_activity: boolean;
 }
 
 function mapPreferences(row: PreferencesRow): NotificationPreferences {
@@ -23,6 +26,7 @@ function mapPreferences(row: PreferencesRow): NotificationPreferences {
     emailCourseCompleted: row.email_course_completed,
     emailNewCourse: row.email_new_course,
     emailCertificatePdf: row.email_certificate_pdf,
+    emailWalletActivity: row.email_wallet_activity,
   };
 }
 
@@ -32,7 +36,7 @@ export async function getNotificationPreferences(
 ): Promise<NotificationPreferences> {
   const { data, error } = await supabase
     .from("user_notification_preferences")
-    .select("email_course_completed, email_new_course, email_certificate_pdf")
+    .select("email_course_completed, email_new_course, email_certificate_pdf, email_wallet_activity")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -56,10 +60,11 @@ export async function upsertNotificationPreferences(
         email_course_completed: merged.emailCourseCompleted,
         email_new_course: merged.emailNewCourse,
         email_certificate_pdf: merged.emailCertificatePdf,
+        email_wallet_activity: merged.emailWalletActivity,
       },
       { onConflict: "user_id" },
     )
-    .select("email_course_completed, email_new_course, email_certificate_pdf")
+    .select("email_course_completed, email_new_course, email_certificate_pdf, email_wallet_activity")
     .single();
 
   if (error) throw error;

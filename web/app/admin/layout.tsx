@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Wand2,
+  Users,
 } from "lucide-react";
 
 import { LogoMark, LogoFull } from "@/components/brand/Logo";
@@ -23,6 +24,7 @@ import { t } from "@/lib/i18n";
 
 const NAV_ITEMS = [
   { href: "/admin", labelKey: "admin.nav.dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/users", labelKey: "admin.nav.learners", icon: Users, exact: false },
   { href: "/admin/courses", labelKey: "admin.nav.courses", icon: BookOpen, exact: false },
   { href: "/admin/admins", labelKey: "admin.nav.admins", icon: ShieldCheck, exact: false },
 ] as const;

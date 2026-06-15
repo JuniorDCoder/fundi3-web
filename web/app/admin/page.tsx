@@ -13,6 +13,8 @@ import { t } from "@/lib/i18n";
 interface StatsResponse {
   totalUsers: number;
   totalAdmins: number;
+  totalCourses: number;
+  totalCertificates: number;
 }
 
 function StatCard({
@@ -111,12 +113,14 @@ export default function AdminOverviewPage() {
         <StatCard
           icon={<BookOpen size={20} />}
           label={t("admin.dashboard.totalCourses", lang)}
-          value={3}
+          value={stats?.totalCourses ?? 0}
+          loading={loading}
         />
         <StatCard
           icon={<Award size={20} />}
           label={t("admin.dashboard.totalCertificates", lang)}
-          value={0}
+          value={stats?.totalCertificates ?? 0}
+          loading={loading}
         />
       </motion.div>
 
@@ -127,7 +131,7 @@ export default function AdminOverviewPage() {
         className="flex items-start gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-sm text-[#4A6358]"
       >
         <Info size={16} className="mt-0.5 shrink-0 text-accent" />
-        <span>{t("admin.dashboard.staticNote", lang)}</span>
+        <span>{t("admin.dashboard.liveNote", lang)}</span>
       </motion.div>
     </div>
   );

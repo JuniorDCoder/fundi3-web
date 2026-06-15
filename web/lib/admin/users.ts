@@ -64,6 +64,15 @@ export async function countAllUsers(admin: SupabaseClient): Promise<number> {
   return count;
 }
 
+/** Every Fundi3 account (learners + admins) — backs the admin "Learners" management page. */
+export async function listAllAuthUsers(admin: SupabaseClient): Promise<User[]> {
+  const users: User[] = [];
+  await forEachUser(admin, (user) => {
+    users.push(user);
+  });
+  return users;
+}
+
 export async function findUserByEmail(admin: SupabaseClient, email: string): Promise<User | null> {
   const target = email.trim().toLowerCase();
   let found: User | null = null;

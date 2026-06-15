@@ -89,6 +89,18 @@ const messages = {
     en: "We verified your wallet but couldn't start a session. Please try again.",
     fr: "Votre portefeuille a été vérifié, mais la session n'a pas pu démarrer. Veuillez réessayer.",
   },
+  invalidDisplayName: {
+    en: "Display name must be between 2 and 100 characters.",
+    fr: "Le nom affiché doit contenir entre 2 et 100 caractères.",
+  },
+  cannotDeleteAdmin: {
+    en: "Admin accounts can't be deleted from here.",
+    fr: "Les comptes administrateur ne peuvent pas être supprimés depuis ici.",
+  },
+  fundSweepFailed: {
+    en: "We couldn't move this account's funds to the treasury wallet, so it wasn't deleted. Please try again.",
+    fr: "Impossible de transférer les fonds de ce compte vers le portefeuille de la trésorerie ; il n'a donc pas été supprimé. Veuillez réessayer.",
+  },
 } as const;
 
 export type MessageKey = keyof typeof messages;

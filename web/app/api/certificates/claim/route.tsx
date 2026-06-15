@@ -12,6 +12,7 @@ import { CertificatePDF } from "@/lib/certificates/pdf";
 import { getNotificationPreferences } from "@/lib/user/preferences";
 import { sendMail } from "@/lib/email/mailer";
 import { certificatePdfEmail } from "@/lib/email/templates";
+import { notifyUser } from "@/lib/notifications/dispatch";
 
 export const runtime = "nodejs";
 
@@ -172,7 +173,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // ── 6. Email the certificate PDF (non-blocking) ───────────────────────────────
+  // ── 6. Notify the user the certificate was minted (non-blocking) ──────────────
+  if (certificatePda !== null) {
+    await notifyUser(
+      admin,
+      user.id,
+      user.email ?? null,
+      {
+        type: "certificate_minted",
+        courseNameEn: courseRow.title_en,
+        courseNameFr: courseRow.title_fr,
+        certId,
+      },
+      lang,
+    );
+  }
+
+  // ── 7. Email the certificate PDF (non-blocking) ───────────────────────────────
   try {
     const prefs = await getNotificationPreferences(admin, user.id);
     if (prefs.emailCertificatePdf && user.email) {

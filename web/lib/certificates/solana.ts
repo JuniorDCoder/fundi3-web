@@ -43,7 +43,7 @@ function getRpcUrl() {
   return process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 }
 
-function getAuthorityKeypair(): Keypair {
+export function getAuthorityKeypair(): Keypair {
   const raw = process.env.CERTIFICATE_AUTHORITY_KEYPAIR;
   if (!raw) throw new Error("CERTIFICATE_AUTHORITY_KEYPAIR env var is missing");
   return Keypair.fromSecretKey(bs58.decode(raw));
