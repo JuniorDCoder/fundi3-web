@@ -17,6 +17,7 @@ import { createHash } from "crypto";
 import {
   Connection,
   Keypair,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -26,7 +27,17 @@ import {
 import bs58 from "bs58";
 import nacl from "tweetnacl";
 
-const PROGRAM_ID = new PublicKey("AsuQPnJ7chUgFnnqQrZ4vrf1mC48NoXzPJUDV82Pm8XP");
+export const CERTIFICATE_PROGRAM_ID = new PublicKey("AsuQPnJ7chUgFnnqQrZ4vrf1mC48NoXzPJUDV82Pm8XP");
+const PROGRAM_ID = CERTIFICATE_PROGRAM_ID;
+
+/**
+ * SOL sent from the authority to the student's wallet in the same
+ * transaction that records their certificate — a small "welcome" balance
+ * so a freshly-minted certificate wallet can immediately pay for its own
+ * transaction fees (e.g. sending SOL from the new Send/Receive flow).
+ */
+export const CERTIFICATE_REWARD_SOL = 0.01;
+const CERTIFICATE_REWARD_LAMPORTS = Math.round(CERTIFICATE_REWARD_SOL * LAMPORTS_PER_SOL);
 
 function getRpcUrl() {
   return process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
@@ -162,7 +173,16 @@ export async function issueCertificateOnChain(
     data,
   });
 
-  const tx = new Transaction().add(ix);
+  // Bundle a small SOL transfer to the student's wallet in the same
+  // transaction as the certificate record, so claiming a certificate is
+  // itself a transaction that lands in (and tops up) the student's wallet.
+  const rewardIx = SystemProgram.transfer({
+    fromPubkey: authority.publicKey,
+    toPubkey: studentPubkey,
+    lamports: CERTIFICATE_REWARD_LAMPORTS,
+  });
+
+  const tx = new Transaction().add(ix, rewardIx);
   const txSig = await sendAndConfirmTransaction(connection, tx, [authority], { commitment: "confirmed" });
 
   return { certificatePda: certificatePda.toBase58(), txSig };

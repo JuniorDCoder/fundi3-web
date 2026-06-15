@@ -14,18 +14,38 @@ import {
   KeyRound,
   Loader2,
   AlertCircle,
+  Send as SendIcon,
+  QrCode,
+  ArrowDownLeft,
+  ArrowUpRight,
+  History,
+  ArrowLeftRight,
+  Award,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { t } from "@/lib/i18n";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ExportKeyModal } from "@/components/dashboard/ExportKeyModal";
+import { SendModal } from "@/components/dashboard/SendModal";
+import { ReceiveModal } from "@/components/dashboard/ReceiveModal";
 
 interface WalletInfo {
   address: string;
   network: "devnet" | "testnet" | "mainnet-beta";
   balanceSol: number | null;
   explorerUrl: string;
+}
+
+interface WalletTransaction {
+  signature: string;
+  blockTime: number | null;
+  status: "success" | "failed";
+  direction: "in" | "out" | "other";
+  changeSol: number | null;
+  counterparty: string | null;
+  explorerUrl: string;
+  kind: "certificate" | "transfer";
 }
 
 const NETWORK_LABEL_KEY: Record<WalletInfo["network"], string> = {
@@ -37,6 +57,14 @@ const NETWORK_LABEL_KEY: Record<WalletInfo["network"], string> = {
 function truncateAddress(address: string) {
   if (address.length <= 16) return address;
   return `${address.slice(0, 6)}…${address.slice(-6)}`;
+}
+
+function formatDate(blockTime: number | null, lang: "en" | "fr") {
+  if (!blockTime) return "";
+  return new Date(blockTime * 1000).toLocaleString(lang === "fr" ? "fr-FR" : "en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
 
 export default function WalletPage() {
@@ -51,6 +79,11 @@ export default function WalletPage() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [airdropping, setAirdropping] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [sendOpen, setSendOpen] = useState(false);
+  const [receiveOpen, setReceiveOpen] = useState(false);
+
+  const [transactions, setTransactions] = useState<WalletTransaction[] | null>(null);
+  const [txLoading, setTxLoading] = useState(true);
 
   const loadWallet = useCallback(async () => {
     try {
@@ -64,14 +97,28 @@ export default function WalletPage() {
     }
   }, []);
 
+  const loadTransactions = useCallback(async () => {
+    try {
+      const res = await fetch("/api/wallet/transactions");
+      if (!res.ok) throw new Error();
+      const data: { transactions: WalletTransaction[] } = await res.json();
+      setTransactions(data.transactions);
+    } catch {
+      setTransactions([]);
+    }
+  }, []);
+
   useEffect(() => {
     if (!user) {
       setLoading(false);
+      setTxLoading(false);
       return;
     }
     setLoading(true);
+    setTxLoading(true);
     loadWallet().finally(() => setLoading(false));
-  }, [user, loadWallet]);
+    loadTransactions().finally(() => setTxLoading(false));
+  }, [user, loadWallet, loadTransactions]);
 
   useEffect(() => {
     if (!wallet) {
@@ -89,7 +136,7 @@ export default function WalletPage() {
 
   async function handleRefresh() {
     setRefreshing(true);
-    await loadWallet();
+    await Promise.all([loadWallet(), loadTransactions()]);
     setRefreshing(false);
   }
 
@@ -110,12 +157,16 @@ export default function WalletPage() {
       const res = await fetch("/api/wallet/airdrop", { method: "POST" });
       if (!res.ok) throw new Error();
       toast.success(t("wallet.airdropSuccess", lang), { icon: <Coins size={16} className="text-accent" /> });
-      setTimeout(() => loadWallet(), 1500);
+      setTimeout(() => handleRefresh(), 1500);
     } catch {
       toast.error(t("wallet.airdropError", lang), { icon: <AlertCircle size={16} className="text-red-400" /> });
     } finally {
       setAirdropping(false);
     }
+  }
+
+  function handleSendSuccess() {
+    setTimeout(() => handleRefresh(), 1500);
   }
 
   if (authLoading || loading) {
@@ -278,6 +329,28 @@ export default function WalletPage() {
             </p>
           </div>
 
+          {/* Send / Receive */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSendOpen(true)}
+              className="flex-1 inline-flex items-center justify-center gap-2 font-body font-medium text-sm px-4 py-2.5 rounded-xl transition-colors"
+              style={{ backgroundColor: "#0F6E56", color: "#F5FAF7" }}
+            >
+              <SendIcon size={15} />
+              {t("wallet.send", lang)}
+            </button>
+            <button
+              type="button"
+              onClick={() => setReceiveOpen(true)}
+              className="flex-1 inline-flex items-center justify-center gap-2 font-body font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors hover:border-white/20"
+              style={{ borderColor: "#1E2E28", color: "#F5FAF7" }}
+            >
+              <QrCode size={15} />
+              {t("wallet.receive", lang)}
+            </button>
+          </div>
+
           {wallet.network === "devnet" && (
             <button
               type="button"
@@ -320,7 +393,110 @@ export default function WalletPage() {
         </motion.div>
       </div>
 
+      {/* Transaction history */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mt-6 max-w-3xl space-y-4"
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(15,110,86,0.15)" }}>
+            <History size={16} style={{ color: "#1D9E75" }} />
+          </div>
+          <span className="font-heading font-semibold text-sm" style={{ color: "#F5FAF7" }}>
+            {t("wallet.txHistoryTitle", lang)}
+          </span>
+        </div>
+
+        {txLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-14 rounded-xl" />
+            <Skeleton className="h-14 rounded-xl" />
+            <Skeleton className="h-14 rounded-xl" />
+          </div>
+        ) : !transactions || transactions.length === 0 ? (
+          <p className="font-body text-sm leading-relaxed" style={{ color: "#4A6358" }}>
+            {t("wallet.txEmpty", lang)}
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {transactions.map((txItem) => {
+              const isCertificate = txItem.kind === "certificate";
+              const isIn = txItem.direction === "in";
+              const isOut = txItem.direction === "out";
+              const iconColor = isCertificate ? "#EF9F27" : isIn ? "#1D9E75" : isOut ? "#EF9F27" : "#4A6358";
+              const iconBg = isCertificate
+                ? "rgba(239,159,39,0.12)"
+                : isIn
+                  ? "rgba(15,110,86,0.15)"
+                  : isOut
+                    ? "rgba(239,159,39,0.12)"
+                    : "rgba(255,255,255,0.05)";
+              const Icon = isCertificate ? Award : isIn ? ArrowDownLeft : isOut ? ArrowUpRight : ArrowLeftRight;
+              const label = isCertificate
+                ? t("wallet.txCertificate", lang)
+                : isIn
+                  ? t("wallet.txReceived", lang)
+                  : isOut
+                    ? t("wallet.txSent", lang)
+                    : t("wallet.txOther", lang);
+              const counterpartyLabel = txItem.counterparty
+                ? isIn
+                  ? t("wallet.txFrom", lang, { address: truncateAddress(txItem.counterparty) })
+                  : t("wallet.txTo", lang, { address: truncateAddress(txItem.counterparty) })
+                : null;
+
+              return (
+                <a
+                  key={txItem.signature}
+                  href={txItem.explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors hover:border-white/20"
+                  style={{ borderColor: "#1E2E28" }}
+                >
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: iconBg }}>
+                    <Icon size={16} style={{ color: iconColor }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-body font-medium text-sm" style={{ color: "#F5FAF7" }}>
+                        {label}
+                      </p>
+                      {txItem.status === "failed" && (
+                        <span className="font-mono text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: "rgba(239,68,68,0.12)", color: "#fca5a5" }}>
+                          {t("wallet.txFailed", lang)}
+                        </span>
+                      )}
+                    </div>
+                    {counterpartyLabel && (
+                      <p className="font-mono text-xs truncate" style={{ color: "#4A6358" }}>
+                        {counterpartyLabel}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    {txItem.changeSol !== null && (
+                      <p className="font-mono text-sm font-medium" style={{ color: isIn ? "#1D9E75" : "#F5FAF7" }}>
+                        {txItem.changeSol > 0 ? "+" : ""}
+                        {txItem.changeSol.toLocaleString(undefined, { maximumFractionDigits: 6 })} SOL
+                      </p>
+                    )}
+                    <p className="font-mono text-[11px]" style={{ color: "#4A6358" }}>
+                      {formatDate(txItem.blockTime, lang)}
+                    </p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
+
       <ExportKeyModal open={exportOpen} onClose={() => setExportOpen(false)} />
+      <SendModal open={sendOpen} onClose={() => setSendOpen(false)} availableSol={wallet.balanceSol} onSuccess={handleSendSuccess} />
+      <ReceiveModal open={receiveOpen} onClose={() => setReceiveOpen(false)} address={wallet.address} qrDataUrl={qrDataUrl} />
     </div>
   );
 }
