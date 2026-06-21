@@ -41,6 +41,7 @@ import {
 } from "./QuizQuestionEditor";
 import { CodeLessonEditor } from "./CodeLessonEditor";
 import { LessonContentEditor } from "./LessonContentEditor";
+import { ImageUpload } from "./ImageUpload";
 
 let keyCounter = 0;
 export function nextKey(prefix: string): string {
@@ -111,6 +112,7 @@ function fromDbCourse(course: DbCourse): {
   status: CourseStatus;
   isFree: boolean;
   priceUsd: string;
+  commissionRate: string;
   isAfrican: boolean;
   durationLabel: string;
   gradientFrom: string;
@@ -134,6 +136,7 @@ function fromDbCourse(course: DbCourse): {
     status: course.status,
     isFree: course.isFree,
     priceUsd: course.priceUsd !== null ? String(course.priceUsd) : "",
+    commissionRate: String(course.commissionRate ?? 70),
     isAfrican: course.isAfrican,
     durationLabel: course.durationLabel,
     gradientFrom: course.gradientFrom,
@@ -186,6 +189,7 @@ function emptyForm() {
     status: "draft" as CourseStatus,
     isFree: true,
     priceUsd: "",
+    commissionRate: "70",
     isAfrican: false,
     durationLabel: "",
     gradientFrom: "#0F6E56",
@@ -516,6 +520,7 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
       status: form.status,
       isFree: form.isFree,
       priceUsd: form.isFree ? null : Number(form.priceUsd),
+      commissionRate: form.isFree ? 70 : Number(form.commissionRate) || 70,
       isAfrican: form.isAfrican,
       durationLabel: form.durationLabel.trim(),
       gradientFrom: form.gradientFrom,
@@ -761,6 +766,22 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
             </Field>
           )}
 
+          {!form.isFree && (
+            <Field
+              label={t("admin.courses.editor.commissionRate", lang)}
+              hint={t("admin.courses.editor.commissionHint", lang)}
+            >
+              <TextInput
+                type="number"
+                min="0"
+                max="100"
+                step="0.01"
+                value={form.commissionRate}
+                onChange={(e) => patch({ commissionRate: e.target.value })}
+              />
+            </Field>
+          )}
+
           <Field label={t("admin.courses.editor.durationLabel", lang)}>
             <TextInput
               placeholder="2h 30m"
@@ -816,14 +837,12 @@ export function CourseEditor({ mode, course }: CourseEditorProps) {
           }}
         />
 
-        <Field label={t("admin.courses.editor.thumbnailLabel", lang)}>
-          <TextInput
-            type="url"
-            placeholder="https://…"
-            value={form.thumbnailUrl}
-            onChange={(e) => patch({ thumbnailUrl: e.target.value })}
-          />
-        </Field>
+        <ImageUpload
+          label={t("admin.courses.editor.thumbnailLabel", lang)}
+          value={form.thumbnailUrl || null}
+          onChange={(url) => patch({ thumbnailUrl: url ?? "" })}
+          folder="thumbnails"
+        />
 
         <Field
           label={t("admin.courses.editor.tagsLabel", lang)}

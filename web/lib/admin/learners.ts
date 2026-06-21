@@ -60,7 +60,7 @@ export async function listLearners(admin: SupabaseClient): Promise<LearnerSummar
   return users
     .map((user): LearnerSummary => {
       const meta = getAdminMetadata(user);
-      const adminRole: AdminRole | null = meta ? (meta.admin_role === "superadmin" ? "superadmin" : "admin") : null;
+      const adminRole: AdminRole | null = meta ? (meta.admin_role === "superadmin" ? "superadmin" : meta.admin_role === "tutor" ? "tutor" : "admin") : null;
       const walletAddress = deriveStudentPubkey(user.id).toBase58();
       return {
         id: user.id,

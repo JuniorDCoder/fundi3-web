@@ -644,7 +644,7 @@ export const en: Record<string, string> = {
   "admin.courses.editor.sectionDisplay": "Display",
   "admin.courses.editor.gradientFromLabel": "Gradient — from",
   "admin.courses.editor.gradientToLabel": "Gradient — to",
-  "admin.courses.editor.thumbnailLabel": "Thumbnail URL (optional)",
+  "admin.courses.editor.thumbnailLabel": "Course thumbnail",
   "admin.courses.editor.tagsLabel": "Tags",
   "admin.courses.editor.tagsHint": "Comma-separated, e.g. Solidity, DeFi, Beginner-friendly",
 
@@ -795,6 +795,87 @@ export const en: Record<string, string> = {
   "cert.downloadPdf": "Download PDF",
   "cert.share": "Share",
   "cert.linkCopied": "Link copied!",
+
+  // ── Tutor role ──────────────────────────────────────────────────────────────
+  "admin.admins.roleTutor": "Tutor",
+  "admin.nav.myCourses": "My Courses",
+  "admin.nav.myStudents": "My Students",
+  "admin.nav.wallet": "Wallet",
+  "admin.nav.activity": "Activity",
+  "admin.nav.settings": "Settings",
+
+  // Tutor dashboard
+  "admin.dashboard.totalStudents": "Enrolled students",
+  "admin.dashboard.myTotalCourses": "My courses",
+  "admin.dashboard.myCompletedLessons": "Completed lessons",
+  "admin.dashboard.myCertificates": "Certificates earned",
+  "admin.dashboard.totalTutors": "Tutors",
+
+  // Tutor students page
+  "admin.students.title": "My Students",
+  "admin.students.subtitle": "Students enrolled in your courses and their progress.",
+  "admin.students.tableStudent": "Student",
+  "admin.students.tableCourse": "Course",
+  "admin.students.tableEnrolled": "Enrolled",
+  "admin.students.tableProgress": "Progress",
+  "admin.students.tableLastActive": "Last active",
+  "admin.students.empty": "No students enrolled yet.",
+  "admin.students.filterAll": "All courses",
+
+  // User search combobox
+  "admin.admins.searchPlaceholder": "Search by email…",
+  "admin.admins.searchNoResults": "No users found",
+  "admin.admins.searchLoading": "Searching…",
+  "admin.admins.selectUser": "Select a user",
+
+  // Activity page
+  "admin.activity.title": "Platform Activity",
+  "admin.activity.subtitle": "Recent actions across the platform.",
+  "admin.activity.empty": "No activity recorded yet.",
+  "admin.activity.loadMore": "Load more",
+  "admin.activity.courseCreated": "{{actor}} created course \"{{title}}\"",
+  "admin.activity.courseUpdated": "{{actor}} updated course \"{{title}}\"",
+  "admin.activity.coursePublished": "{{actor}} published course \"{{title}}\"",
+  "admin.activity.userEnrolled": "{{actor}} enrolled in \"{{title}}\"",
+  "admin.activity.certificateIssued": "Certificate issued to {{actor}} for \"{{title}}\"",
+  "admin.activity.walletSend": "{{actor}} sent {{amount}} SOL",
+  "admin.activity.walletReceive": "{{actor}} received {{amount}} SOL",
+  "admin.activity.rolePromoted": "{{actor}} was promoted to {{role}}",
+  "admin.activity.roleRevoked": "{{actor}}'s admin access was revoked",
+  "admin.activity.commissionUpdated": "Commission settings updated by {{actor}}",
+
+  // Commission settings
+  "admin.settings.title": "Settings",
+  "admin.settings.subtitle": "Platform configuration. Superadmin only.",
+  "admin.settings.commissionTitle": "Commission Settings",
+  "admin.settings.commissionSubtitle": "Configure the default tutor commission rate and platform wallet.",
+  "admin.settings.defaultRate": "Default tutor commission rate (%)",
+  "admin.settings.defaultRateHint": "Percentage of course revenue the tutor receives. Remainder goes to the platform.",
+  "admin.settings.platformWallet": "Platform treasury wallet address",
+  "admin.settings.platformWalletHint": "Solana address for platform revenue collection.",
+  "admin.settings.save": "Save settings",
+  "admin.settings.saving": "Saving…",
+  "admin.settings.saved": "Settings saved",
+  "admin.settings.saveError": "Couldn't save settings. Try again.",
+
+  // Image upload
+  "admin.upload.dragDrop": "Drag & drop an image, or click to browse",
+  "admin.upload.uploading": "Uploading…",
+  "admin.upload.remove": "Remove image",
+  "admin.upload.maxSize": "Max 5MB. JPEG, PNG, WebP, or GIF.",
+  "admin.upload.error": "Upload failed. Please try again.",
+  "admin.upload.insertImage": "Insert image",
+
+  // Course editor commission + tutor fields
+  "admin.courses.editor.commissionRate": "Tutor commission rate (%)",
+  "admin.courses.editor.commissionHint": "Override the default rate for this course.",
+  "admin.courses.editor.assignTutor": "Assign tutor",
+  "admin.courses.editor.assignTutorHint": "Select the tutor who owns this course.",
+  "admin.courses.editor.noTutor": "No tutor assigned",
+
+  // Admin wallet
+  "admin.wallet.title": "Wallet",
+  "admin.wallet.subtitle": "Your Solana wallet for platform transactions.",
 
   // Common
   "common.retry": "Try again",

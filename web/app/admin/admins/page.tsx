@@ -21,6 +21,7 @@ import { authedFetch, type ApiError } from "@/lib/admin/api-client";
 import { t, type Lang } from "@/lib/i18n";
 import type { AdminUserSummary } from "@/lib/admin/users";
 import { SkeletonTableRows } from "@/components/ui/Skeleton";
+import { UserSearchCombobox } from "@/components/admin/UserSearchCombobox";
 
 function formatDate(value: string | null, lang: Lang): string {
   if (!value) return t("admin.admins.never", lang);
@@ -37,6 +38,14 @@ function RoleBadge({ role, lang }: { role: AdminRole; lang: Lang }) {
       <span className="inline-flex items-center gap-1.5 bg-secondary/10 border border-secondary/20 text-[#EF9F27] text-xs font-medium rounded-full px-2.5 py-1">
         <Crown size={12} />
         {t("admin.admins.roleSuperadmin", lang)}
+      </span>
+    );
+  }
+  if (role === "tutor") {
+    return (
+      <span className="inline-flex items-center gap-1.5 bg-accent/10 border border-accent/20 text-[#1D9E75] text-xs font-medium rounded-full px-2.5 py-1">
+        <Sparkles size={12} />
+        {t("admin.admins.roleTutor", lang)}
       </span>
     );
   }
@@ -184,20 +193,10 @@ export default function AdminAdminsPage() {
 
           <form onSubmit={handlePromote} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr_auto] gap-3 items-end">
             <div>
-              <label htmlFor="promote-email" className="block text-xs font-medium text-[#F5FAF7]/80 mb-1.5">
+              <label className="block text-xs font-medium text-[#F5FAF7]/80 mb-1.5">
                 {t("admin.admins.emailLabel", lang)}
               </label>
-              <input
-                id="promote-email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("admin.admins.emailPlaceholder", lang)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm
-                           text-[#F5FAF7] placeholder-[#4A6358]
-                           focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-              />
+              <UserSearchCombobox value={email} onChange={setEmail} />
             </div>
 
             <div>
@@ -207,10 +206,14 @@ export default function AdminAdminsPage() {
               <select
                 id="promote-role"
                 value={role}
-                onChange={(e) => setRole(e.target.value === "superadmin" ? "superadmin" : "admin")}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setRole(v === "superadmin" ? "superadmin" : v === "tutor" ? "tutor" : "admin");
+                }}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#F5FAF7]
                            focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               >
+                <option value="tutor" className="bg-surface">{t("admin.admins.roleTutor", lang)}</option>
                 <option value="admin" className="bg-surface">{t("admin.admins.roleAdmin", lang)}</option>
                 <option value="superadmin" className="bg-surface">{t("admin.admins.roleSuperadmin", lang)}</option>
               </select>

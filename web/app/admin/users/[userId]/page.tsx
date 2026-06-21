@@ -40,12 +40,20 @@ function localizedTitle(titleEn: string, titleFr: string, lang: Lang): string {
   return lang === "fr" ? titleFr || titleEn : titleEn || titleFr;
 }
 
-function RoleBadge({ role, lang }: { role: "admin" | "superadmin"; lang: Lang }) {
+function RoleBadge({ role, lang }: { role: "admin" | "superadmin" | "tutor"; lang: Lang }) {
   if (role === "superadmin") {
     return (
       <span className="inline-flex items-center gap-1.5 bg-secondary/10 border border-secondary/20 text-[#EF9F27] text-xs font-medium rounded-full px-2.5 py-1">
         <Crown size={12} />
         {t("admin.learners.roleSuperadmin", lang)}
+      </span>
+    );
+  }
+  if (role === "tutor") {
+    return (
+      <span className="inline-flex items-center gap-1.5 bg-accent/10 border border-accent/20 text-[#1D9E75] text-xs font-medium rounded-full px-2.5 py-1">
+        <ShieldPlus size={12} />
+        {t("admin.admins.roleTutor", lang)}
       </span>
     );
   }

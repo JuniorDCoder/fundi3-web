@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 
-export type AdminRole = "admin" | "superadmin";
+export type AdminRole = "admin" | "superadmin" | "tutor";
 export type AdminLoginMethod = "password" | "wallet";
 
 /**
@@ -29,5 +29,12 @@ export function isAdminUser(user: MetadataBearer): boolean {
 }
 
 export function adminRole(user: MetadataBearer): AdminRole {
-  return getAdminMetadata(user)?.admin_role === "superadmin" ? "superadmin" : "admin";
+  const role = getAdminMetadata(user)?.admin_role;
+  if (role === "superadmin") return "superadmin";
+  if (role === "tutor") return "tutor";
+  return "admin";
+}
+
+export function isTutorOnly(user: MetadataBearer): boolean {
+  return getAdminMetadata(user)?.admin_role === "tutor";
 }

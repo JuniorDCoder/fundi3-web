@@ -15,19 +15,48 @@ import {
   X,
   Wand2,
   Users,
+  Activity,
+  Wallet,
+  Settings,
+  GraduationCap,
 } from "lucide-react";
 
 import { LogoMark, LogoFull } from "@/components/brand/Logo";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { adminRole, type AdminRole } from "@/lib/admin/metadata";
 import { t } from "@/lib/i18n";
 
-const NAV_ITEMS = [
-  { href: "/admin", labelKey: "admin.nav.dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/users", labelKey: "admin.nav.learners", icon: Users, exact: false },
-  { href: "/admin/courses", labelKey: "admin.nav.courses", icon: BookOpen, exact: false },
-  { href: "/admin/admins", labelKey: "admin.nav.admins", icon: ShieldCheck, exact: false },
-] as const;
+interface NavItem {
+  href: string;
+  labelKey: string;
+  icon: typeof LayoutDashboard;
+  exact: boolean;
+}
+
+function getNavItems(role: AdminRole): NavItem[] {
+  const items: NavItem[] = [
+    { href: "/admin", labelKey: "admin.nav.dashboard", icon: LayoutDashboard, exact: true },
+  ];
+
+  if (role === "tutor") {
+    items.push({ href: "/admin/courses", labelKey: "admin.nav.myCourses", icon: BookOpen, exact: false });
+    items.push({ href: "/admin/students", labelKey: "admin.nav.myStudents", icon: GraduationCap, exact: false });
+  } else {
+    items.push({ href: "/admin/users", labelKey: "admin.nav.learners", icon: Users, exact: false });
+    items.push({ href: "/admin/courses", labelKey: "admin.nav.courses", icon: BookOpen, exact: false });
+    items.push({ href: "/admin/admins", labelKey: "admin.nav.admins", icon: ShieldCheck, exact: false });
+    items.push({ href: "/admin/activity", labelKey: "admin.nav.activity", icon: Activity, exact: false });
+  }
+
+  items.push({ href: "/admin/wallet", labelKey: "admin.nav.wallet", icon: Wallet, exact: false });
+
+  if (role === "superadmin") {
+    items.push({ href: "/admin/settings", labelKey: "admin.nav.settings", icon: Settings, exact: false });
+  }
+
+  return items;
+}
 
 function isActive(pathname: string, href: string, exact: boolean): boolean {
   return exact ? pathname === href : pathname.startsWith(href);
@@ -39,6 +68,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const role = adminRole(adminUser);
+  const navItems = getNavItems(role);
 
   // /admin/login renders its own full-screen layout — skip the shell.
   if (pathname === "/admin/login") return <>{children}</>;
@@ -54,7 +86,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const navLinks = (onNavigate?: () => void) => (
     <nav className="space-y-1">
-      {NAV_ITEMS.map(({ href, labelKey, icon: Icon, exact }) => {
+      {navItems.map(({ href, labelKey, icon: Icon, exact }) => {
         const active = isActive(pathname, href, exact);
         return (
           <Link

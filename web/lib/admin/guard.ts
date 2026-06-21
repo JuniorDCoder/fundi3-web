@@ -28,3 +28,15 @@ export async function getAuthenticatedAdmin(request: NextRequest): Promise<Authe
 export function isSuperadmin(metadata: AdminAppMetadata): boolean {
   return metadata.admin_role === "superadmin";
 }
+
+export function isTutor(metadata: AdminAppMetadata): boolean {
+  return metadata.admin_role === "tutor";
+}
+
+export function canManageUsers(metadata: AdminAppMetadata): boolean {
+  return metadata.admin_role === "admin" || metadata.admin_role === "superadmin";
+}
+
+export function canViewAllData(metadata: AdminAppMetadata): boolean {
+  return metadata.admin_role === "admin" || metadata.admin_role === "superadmin";
+}

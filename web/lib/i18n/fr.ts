@@ -644,7 +644,7 @@ export const fr: Record<string, string> = {
   "admin.courses.editor.sectionDisplay": "Présentation",
   "admin.courses.editor.gradientFromLabel": "Dégradé — départ",
   "admin.courses.editor.gradientToLabel": "Dégradé — arrivée",
-  "admin.courses.editor.thumbnailLabel": "URL de la miniature (facultatif)",
+  "admin.courses.editor.thumbnailLabel": "Miniature du cours",
   "admin.courses.editor.tagsLabel": "Étiquettes",
   "admin.courses.editor.tagsHint": "Séparées par des virgules, ex. Solidity, DeFi, Pour débutants",
 
@@ -795,6 +795,87 @@ export const fr: Record<string, string> = {
   "cert.downloadPdf": "Télécharger le PDF",
   "cert.share": "Partager",
   "cert.linkCopied": "Lien copié !",
+
+  // ── Rôle tuteur ─────────────────────────────────────────────────────────────
+  "admin.admins.roleTutor": "Tuteur",
+  "admin.nav.myCourses": "Mes cours",
+  "admin.nav.myStudents": "Mes étudiants",
+  "admin.nav.wallet": "Portefeuille",
+  "admin.nav.activity": "Activité",
+  "admin.nav.settings": "Paramètres",
+
+  // Tableau de bord tuteur
+  "admin.dashboard.totalStudents": "Étudiants inscrits",
+  "admin.dashboard.myTotalCourses": "Mes cours",
+  "admin.dashboard.myCompletedLessons": "Leçons terminées",
+  "admin.dashboard.myCertificates": "Certificats obtenus",
+  "admin.dashboard.totalTutors": "Tuteurs",
+
+  // Page étudiants du tuteur
+  "admin.students.title": "Mes étudiants",
+  "admin.students.subtitle": "Étudiants inscrits à vos cours et leur progression.",
+  "admin.students.tableStudent": "Étudiant",
+  "admin.students.tableCourse": "Cours",
+  "admin.students.tableEnrolled": "Inscrit",
+  "admin.students.tableProgress": "Progression",
+  "admin.students.tableLastActive": "Dernière activité",
+  "admin.students.empty": "Aucun étudiant inscrit pour le moment.",
+  "admin.students.filterAll": "Tous les cours",
+
+  // Recherche d'utilisateurs
+  "admin.admins.searchPlaceholder": "Rechercher par e-mail…",
+  "admin.admins.searchNoResults": "Aucun utilisateur trouvé",
+  "admin.admins.searchLoading": "Recherche…",
+  "admin.admins.selectUser": "Sélectionner un utilisateur",
+
+  // Page d'activité
+  "admin.activity.title": "Activité de la plateforme",
+  "admin.activity.subtitle": "Actions récentes sur la plateforme.",
+  "admin.activity.empty": "Aucune activité enregistrée.",
+  "admin.activity.loadMore": "Charger plus",
+  "admin.activity.courseCreated": "{{actor}} a créé le cours « {{title}} »",
+  "admin.activity.courseUpdated": "{{actor}} a mis à jour le cours « {{title}} »",
+  "admin.activity.coursePublished": "{{actor}} a publié le cours « {{title}} »",
+  "admin.activity.userEnrolled": "{{actor}} s'est inscrit à « {{title}} »",
+  "admin.activity.certificateIssued": "Certificat délivré à {{actor}} pour « {{title}} »",
+  "admin.activity.walletSend": "{{actor}} a envoyé {{amount}} SOL",
+  "admin.activity.walletReceive": "{{actor}} a reçu {{amount}} SOL",
+  "admin.activity.rolePromoted": "{{actor}} a été promu {{role}}",
+  "admin.activity.roleRevoked": "L'accès admin de {{actor}} a été révoqué",
+  "admin.activity.commissionUpdated": "Paramètres de commission mis à jour par {{actor}}",
+
+  // Paramètres de commission
+  "admin.settings.title": "Paramètres",
+  "admin.settings.subtitle": "Configuration de la plateforme. Superadmin uniquement.",
+  "admin.settings.commissionTitle": "Paramètres de commission",
+  "admin.settings.commissionSubtitle": "Configurez le taux de commission par défaut pour les tuteurs et le portefeuille de la plateforme.",
+  "admin.settings.defaultRate": "Taux de commission tuteur par défaut (%)",
+  "admin.settings.defaultRateHint": "Pourcentage des revenus du cours que le tuteur reçoit. Le reste va à la plateforme.",
+  "admin.settings.platformWallet": "Adresse du portefeuille de trésorerie",
+  "admin.settings.platformWalletHint": "Adresse Solana pour la collecte des revenus de la plateforme.",
+  "admin.settings.save": "Enregistrer",
+  "admin.settings.saving": "Enregistrement…",
+  "admin.settings.saved": "Paramètres enregistrés",
+  "admin.settings.saveError": "Impossible d'enregistrer. Réessayez.",
+
+  // Téléchargement d'images
+  "admin.upload.dragDrop": "Glissez-déposez une image, ou cliquez pour parcourir",
+  "admin.upload.uploading": "Téléchargement…",
+  "admin.upload.remove": "Supprimer l'image",
+  "admin.upload.maxSize": "Max 5 Mo. JPEG, PNG, WebP ou GIF.",
+  "admin.upload.error": "Échec du téléchargement. Réessayez.",
+  "admin.upload.insertImage": "Insérer une image",
+
+  // Champs commission + tuteur dans l'éditeur de cours
+  "admin.courses.editor.commissionRate": "Taux de commission tuteur (%)",
+  "admin.courses.editor.commissionHint": "Remplacer le taux par défaut pour ce cours.",
+  "admin.courses.editor.assignTutor": "Assigner un tuteur",
+  "admin.courses.editor.assignTutorHint": "Sélectionnez le tuteur propriétaire de ce cours.",
+  "admin.courses.editor.noTutor": "Aucun tuteur assigné",
+
+  // Portefeuille admin
+  "admin.wallet.title": "Portefeuille",
+  "admin.wallet.subtitle": "Votre portefeuille Solana pour les transactions de la plateforme.",
 
   // Common
   "common.retry": "Réessayer",

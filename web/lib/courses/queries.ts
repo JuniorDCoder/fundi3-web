@@ -38,6 +38,8 @@ interface CourseRow {
   outcomes_fr: string[] | null;
   position: number;
   created_by: string | null;
+  tutor_id: string | null;
+  commission_rate: number | string;
   created_at: string;
   updated_at: string;
   course_modules?: ModuleRow[] | null;
@@ -169,6 +171,8 @@ function mapCourse(row: CourseRow): DbCourse {
     outcomesFr: row.outcomes_fr ?? [],
     position: row.position,
     createdBy: row.created_by,
+    tutorId: row.tutor_id ?? null,
+    commissionRate: Number(row.commission_rate ?? 70),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     modules: (row.course_modules ?? []).map(mapModule),
@@ -263,6 +267,18 @@ export async function listAllCourses(admin: SupabaseClient): Promise<DbCourse[]>
   return (data as CourseRow[] | null)?.map(mapCourse) ?? [];
 }
 
+export async function listCoursesByTutor(admin: SupabaseClient, tutorId: string): Promise<DbCourse[]> {
+  const { data, error } = await admin
+    .from("courses")
+    .select(COURSE_TREE_SELECT)
+    .eq("tutor_id", tutorId)
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data as CourseRow[] | null)?.map(mapCourse) ?? [];
+}
+
 export async function getCourseById(admin: SupabaseClient, id: string): Promise<DbCourse | null> {
   const { data, error } = await admin
     .from("courses")
@@ -310,6 +326,8 @@ const COURSE_COLUMNS = (input: CourseTreeInput, createdBy?: string | null) => ({
   outcomes_fr: input.outcomesFr,
   position: input.position,
   ...(createdBy !== undefined ? { created_by: createdBy } : {}),
+  ...(input.tutorId !== undefined ? { tutor_id: input.tutorId } : {}),
+  ...(input.commissionRate !== undefined ? { commission_rate: input.commissionRate } : {}),
 });
 
 /**

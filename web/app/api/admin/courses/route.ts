@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseLang } from "@/lib/auth/messages";
-import { getAuthenticatedAdmin } from "@/lib/admin/guard";
+import { getAuthenticatedAdmin, isTutor } from "@/lib/admin/guard";
 import { courseMessage } from "@/lib/courses/messages";
-import { findCourseBySlug, listAllCourses, saveCourseTree } from "@/lib/courses/queries";
+import { findCourseBySlug, listAllCourses, listCoursesByTutor, saveCourseTree } from "@/lib/courses/queries";
 import { parseCourseTreeInput } from "@/lib/courses/validation";
 import { notifyNewCourseSubscribers } from "@/lib/email/notifications";
+import { logActivity } from "@/lib/activity/log";
 
 /** GET: list every course (any status) — the admin catalog table. */
 export async function GET(request: NextRequest) {
@@ -19,7 +20,9 @@ export async function GET(request: NextRequest) {
   }
 
   const admin = createAdminClient();
-  const courses = await listAllCourses(admin);
+  const courses = isTutor(caller.metadata)
+    ? await listCoursesByTutor(admin, caller.user.id)
+    : await listAllCourses(admin);
   return NextResponse.json({ courses });
 }
 
@@ -45,7 +48,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Creating always inserts a fresh row — ignore any client-supplied id.
-  const input = { ...parsed.value, id: undefined };
+  const input = {
+    ...parsed.value,
+    id: undefined,
+    ...(isTutor(caller.metadata) ? { tutorId: caller.user.id } : {}),
+  };
 
   const admin = createAdminClient();
 
@@ -60,7 +67,14 @@ export async function POST(request: NextRequest) {
   try {
     const course = await saveCourseTree(admin, input, caller.user.id);
 
+    await logActivity(admin, caller.user.id, "course_created", "course", course.id, {
+      title: course.titleEn,
+    });
+
     if (course.status === "published") {
+      await logActivity(admin, caller.user.id, "course_published", "course", course.id, {
+        title: course.titleEn,
+      });
       await notifyNewCourseSubscribers(admin, course).catch((err) =>
         console.error("[admin:courses] new-course email failed:", err),
       );

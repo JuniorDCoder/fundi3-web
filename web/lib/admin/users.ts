@@ -23,7 +23,7 @@ function toSummary(user: User): AdminUserSummary | null {
   return {
     id: user.id,
     email: user.email ?? "",
-    role: meta.admin_role === "superadmin" ? "superadmin" : "admin",
+    role: meta.admin_role === "superadmin" ? "superadmin" : meta.admin_role === "tutor" ? "tutor" : "admin",
     walletAddress: meta.wallet_address ?? null,
     lastLoginAt: meta.last_login_at ?? null,
     lastLoginMethod: meta.last_login_method ?? null,

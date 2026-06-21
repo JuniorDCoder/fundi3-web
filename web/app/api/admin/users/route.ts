@@ -5,6 +5,7 @@ import { getAuthenticatedAdmin, isSuperadmin } from "@/lib/admin/guard";
 import { isValidSolanaAddress } from "@/lib/admin/wallet";
 import { findAdminByWallet, findUserByEmail, listAdminUsers, type AdminUserSummary } from "@/lib/admin/users";
 import type { AdminRole } from "@/lib/admin/metadata";
+import { logActivity } from "@/lib/activity/log";
 
 function toSummary(userId: string, email: string, role: AdminRole, walletAddress: string | null): AdminUserSummary {
   return {
@@ -47,15 +48,18 @@ export async function POST(request: NextRequest) {
       { status: 403 },
     );
   }
+  const role: AdminRole = body?.role === "superadmin" ? "superadmin" : body?.role === "tutor" ? "tutor" : "admin";
+
   if (!isSuperadmin(caller.metadata)) {
-    return NextResponse.json(
-      { error: "not_authorized", message: authMessage("notAuthenticated", lang) },
-      { status: 403 },
-    );
+    if (!(caller.metadata.admin_role === "admin" && role === "tutor")) {
+      return NextResponse.json(
+        { error: "not_authorized", message: authMessage("notAuthenticated", lang) },
+        { status: 403 },
+      );
+    }
   }
 
   const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
-  const role: AdminRole = body?.role === "superadmin" ? "superadmin" : "admin";
   const walletAddressRaw = typeof body?.walletAddress === "string" ? body.walletAddress.trim() : "";
   const walletAddress = walletAddressRaw || null;
 
@@ -107,6 +111,11 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  await logActivity(admin, caller.user.id, "role_promoted", "user", target.id, {
+    email: target.email ?? email,
+    role,
+  });
 
   return NextResponse.json({
     admin: toSummary(target.id, target.email ?? email, role, walletAddress ?? target.app_metadata?.wallet_address ?? null),

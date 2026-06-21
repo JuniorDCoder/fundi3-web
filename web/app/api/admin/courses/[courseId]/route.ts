@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseLang } from "@/lib/auth/messages";
-import { getAuthenticatedAdmin } from "@/lib/admin/guard";
+import { getAuthenticatedAdmin, isTutor } from "@/lib/admin/guard";
+import type { AuthenticatedAdmin } from "@/lib/admin/guard";
 import { courseMessage } from "@/lib/courses/messages";
 import { deleteCourse, findCourseBySlug, getCourseById, saveCourseTree } from "@/lib/courses/queries";
+import type { DbCourse } from "@/lib/courses/types";
 import { parseCourseTreeInput } from "@/lib/courses/validation";
 import { notifyNewCourseSubscribers } from "@/lib/email/notifications";
+import { logActivity } from "@/lib/activity/log";
 
 interface RouteParams {
   params: { courseId: string };
@@ -24,6 +27,10 @@ async function requireAdmin(request: NextRequest, lang: ReturnType<typeof parseL
   return { caller };
 }
 
+function tutorOwns(caller: AuthenticatedAdmin, course: DbCourse): boolean {
+  return !isTutor(caller.metadata) || course.tutorId === caller.user.id;
+}
+
 /** GET: fetch a single course (any status) with its full module/lesson tree — for the editor. */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const lang = parseLang(request.nextUrl.searchParams.get("lang"));
@@ -36,6 +43,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       { error: "course_not_found", message: courseMessage("courseNotFound", lang) },
       { status: 404 },
+    );
+  }
+
+  if (!tutorOwns(guard.caller!, course)) {
+    return NextResponse.json(
+      { error: "not_authorized", message: courseMessage("notAdminAccount", lang) },
+      { status: 403 },
     );
   }
 
@@ -56,6 +70,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       { error: "course_not_found", message: courseMessage("courseNotFound", lang) },
       { status: 404 },
+    );
+  }
+
+  if (!tutorOwns(guard.caller!, existing)) {
+    return NextResponse.json(
+      { error: "not_authorized", message: courseMessage("notAdminAccount", lang) },
+      { status: 403 },
     );
   }
 
@@ -82,7 +103,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const course = await saveCourseTree(admin, input, existing.createdBy);
 
+    await logActivity(admin, guard.caller!.user.id, "course_updated", "course", course.id, {
+      title: course.titleEn,
+    });
+
     if (existing.status !== "published" && course.status === "published") {
+      await logActivity(admin, guard.caller!.user.id, "course_published", "course", course.id, {
+        title: course.titleEn,
+      });
       await notifyNewCourseSubscribers(admin, course).catch((err) =>
         console.error("[admin:courses] new-course email failed:", err),
       );
@@ -109,6 +137,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(
       { error: "course_not_found", message: courseMessage("courseNotFound", lang) },
       { status: 404 },
+    );
+  }
+
+  if (!tutorOwns(guard.caller!, existing)) {
+    return NextResponse.json(
+      { error: "not_authorized", message: courseMessage("notAdminAccount", lang) },
+      { status: 403 },
     );
   }
 

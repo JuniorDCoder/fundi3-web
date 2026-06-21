@@ -83,6 +83,8 @@ export interface DbCourse {
   outcomesFr: string[];
   position: number;
   createdBy: string | null;
+  tutorId: string | null;
+  commissionRate: number;
   createdAt: string;
   updatedAt: string;
   modules: DbCourseModule[];
@@ -267,5 +269,7 @@ export interface CourseTreeInput {
   outcomesEn: string[];
   outcomesFr: string[];
   position: number;
+  tutorId?: string | null;
+  commissionRate?: number;
   modules: CourseModuleInput[];
 }

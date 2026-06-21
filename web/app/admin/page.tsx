@@ -6,6 +6,7 @@ import { Users, ShieldCheck, BookOpen, Award, Info } from "lucide-react";
 
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { adminRole } from "@/lib/admin/metadata";
 import { createClient } from "@/lib/supabase/client";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { t } from "@/lib/i18n";
@@ -15,6 +16,8 @@ interface StatsResponse {
   totalAdmins: number;
   totalCourses: number;
   totalCertificates: number;
+  totalTutors?: number;
+  totalStudents?: number;
 }
 
 function StatCard({
@@ -78,6 +81,8 @@ export default function AdminOverviewPage() {
   }, [lang]);
 
   const name = adminUser?.email?.split("@")[0] ?? "";
+  const role = adminRole(adminUser);
+  const isTutorView = role === "tutor";
 
   return (
     <div className="max-w-5xl">
@@ -98,30 +103,61 @@ export default function AdminOverviewPage() {
         transition={{ duration: 0.4, delay: 0.05 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
       >
-        <StatCard
-          icon={<Users size={20} />}
-          label={t("admin.dashboard.totalUsers", lang)}
-          value={stats?.totalUsers ?? 0}
-          loading={loading}
-        />
-        <StatCard
-          icon={<ShieldCheck size={20} />}
-          label={t("admin.dashboard.totalAdmins", lang)}
-          value={stats?.totalAdmins ?? 0}
-          loading={loading}
-        />
-        <StatCard
-          icon={<BookOpen size={20} />}
-          label={t("admin.dashboard.totalCourses", lang)}
-          value={stats?.totalCourses ?? 0}
-          loading={loading}
-        />
-        <StatCard
-          icon={<Award size={20} />}
-          label={t("admin.dashboard.totalCertificates", lang)}
-          value={stats?.totalCertificates ?? 0}
-          loading={loading}
-        />
+        {isTutorView ? (
+          <>
+            <StatCard
+              icon={<BookOpen size={20} />}
+              label={t("admin.dashboard.myTotalCourses", lang)}
+              value={stats?.totalCourses ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<Users size={20} />}
+              label={t("admin.dashboard.totalStudents", lang)}
+              value={stats?.totalStudents ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<Award size={20} />}
+              label={t("admin.dashboard.myCompletedLessons", lang)}
+              value={stats?.totalCertificates ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<Award size={20} />}
+              label={t("admin.dashboard.myCertificates", lang)}
+              value={stats?.totalCertificates ?? 0}
+              loading={loading}
+            />
+          </>
+        ) : (
+          <>
+            <StatCard
+              icon={<Users size={20} />}
+              label={t("admin.dashboard.totalUsers", lang)}
+              value={stats?.totalUsers ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<ShieldCheck size={20} />}
+              label={t("admin.dashboard.totalAdmins", lang)}
+              value={stats?.totalAdmins ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<BookOpen size={20} />}
+              label={t("admin.dashboard.totalCourses", lang)}
+              value={stats?.totalCourses ?? 0}
+              loading={loading}
+            />
+            <StatCard
+              icon={<Award size={20} />}
+              label={t("admin.dashboard.totalCertificates", lang)}
+              value={stats?.totalCertificates ?? 0}
+              loading={loading}
+            />
+          </>
+        )}
       </motion.div>
 
       <motion.div
