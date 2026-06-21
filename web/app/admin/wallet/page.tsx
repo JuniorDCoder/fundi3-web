@@ -201,7 +201,7 @@ export default function AdminWalletPage() {
               )}
               <div className="flex-1 min-w-0 space-y-3">
                 <div>
-                  <p className="text-xs text-[#4A6358] mb-1">{t("wallet.address", lang)}</p>
+                  <p className="text-xs text-[#4A6358] mb-1">{t("wallet.addressLabel", lang)}</p>
                   <div className="flex items-center gap-2">
                     <code className="text-sm text-[#F5FAF7] font-mono truncate">{wallet.address}</code>
                     <button type="button" onClick={handleCopy}
@@ -217,13 +217,13 @@ export default function AdminWalletPage() {
                   </a>
                   <button type="button" onClick={() => setExportOpen(true)}
                     className="inline-flex items-center gap-1.5 text-xs text-[#4A6358] hover:text-[#F5FAF7] transition-colors">
-                    <KeyRound size={12} /> {t("wallet.exportKey", lang)}
+                    <KeyRound size={12} /> {t("wallet.exportButton", lang)}
                   </button>
                   {wallet.network === "devnet" && (
                     <button type="button" onClick={handleAirdrop} disabled={airdropping}
                       className="inline-flex items-center gap-1.5 text-xs text-secondary hover:text-secondary/80 disabled:opacity-50 transition-colors">
                       {airdropping ? <Loader2 size={12} className="animate-spin" /> : <Coins size={12} />}
-                      {t("wallet.airdrop", lang)}
+                      {t("wallet.airdropButton", lang)}
                     </button>
                   )}
                 </div>
@@ -238,7 +238,7 @@ export default function AdminWalletPage() {
           >
             <div className="px-5 py-4 border-b border-white/10 flex items-center gap-2">
               <History size={16} className="text-accent" />
-              <span className="text-sm font-medium text-[#F5FAF7]">{t("wallet.historyTitle", lang)}</span>
+              <span className="text-sm font-medium text-[#F5FAF7]">{t("wallet.txHistoryTitle", lang)}</span>
             </div>
 
             {txLoading ? (
@@ -246,7 +246,7 @@ export default function AdminWalletPage() {
                 {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
               </div>
             ) : !transactions || transactions.length === 0 ? (
-              <p className="p-6 text-center text-sm text-[#4A6358]">{t("wallet.noTransactions", lang)}</p>
+              <p className="p-6 text-center text-sm text-[#4A6358]">{t("wallet.txEmpty", lang)}</p>
             ) : (
               <div className="divide-y divide-white/5">
                 {transactions.map((tx) => {

@@ -43,10 +43,14 @@ function formatDate(value: string, lang: Lang): string {
   });
 }
 
+function snakeToCamel(s: string): string {
+  return s.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 function actionDescription(entry: LogEntry, lang: Lang): string {
   const actor = entry.actorEmail?.split("@")[0] ?? "System";
   const meta = entry.metadata as Record<string, string>;
-  const key = `admin.activity.${entry.action}`;
+  const key = `admin.activity.${snakeToCamel(entry.action)}`;
   return t(key, lang, { actor, title: meta.title ?? "", amount: meta.amountSol ?? "", role: meta.role ?? "" });
 }
 

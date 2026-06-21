@@ -431,6 +431,7 @@ export const en: Record<string, string> = {
   "wallet.txFailed": "Failed",
   "wallet.txTo": "To {{address}}",
   "wallet.txFrom": "From {{address}}",
+  "wallet.viewTx": "View transaction",
 
   // --- Profile ---
   "profile.title": "Profile",
