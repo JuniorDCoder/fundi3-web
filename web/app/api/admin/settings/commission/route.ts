@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
   const rate = Number(body?.defaultTutorRate);
   if (isNaN(rate) || rate < 0 || rate > 100) {
     return NextResponse.json(
-      { error: "invalid_rate", message: "Rate must be between 0 and 100" },
+      { error: "invalid_rate", message: authMessage("invalidRate", lang) },
       { status: 400 },
     );
   }

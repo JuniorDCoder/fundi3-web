@@ -111,7 +111,7 @@ export default function AdminSettingsPage() {
                 type="text"
                 value={wallet}
                 onChange={(e) => setWallet(e.target.value)}
-                placeholder="Solana address"
+                placeholder={t("admin.settings.walletPlaceholder", lang)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm font-mono
                            text-[#F5FAF7] placeholder-[#4A6358]
                            focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"

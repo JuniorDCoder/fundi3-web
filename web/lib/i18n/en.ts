@@ -865,7 +865,13 @@ export const en: Record<string, string> = {
   "admin.upload.remove": "Remove image",
   "admin.upload.maxSize": "Max 5MB. JPEG, PNG, WebP, or GIF.",
   "admin.upload.error": "Upload failed. Please try again.",
+  "admin.upload.errorInvalidType": "Only image files are allowed.",
+  "admin.upload.errorTooLarge": "File must be under 5MB.",
   "admin.upload.insertImage": "Insert image",
+
+  // Commission settings (extra)
+  "admin.settings.errorInvalidRate": "Rate must be between 0 and 100.",
+  "admin.settings.walletPlaceholder": "Solana address",
 
   // Course editor commission + tutor fields
   "admin.courses.editor.commissionRate": "Tutor commission rate (%)",

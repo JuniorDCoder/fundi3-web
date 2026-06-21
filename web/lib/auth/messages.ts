@@ -101,6 +101,10 @@ const messages = {
     en: "We couldn't move this account's funds to the treasury wallet, so it wasn't deleted. Please try again.",
     fr: "Impossible de transférer les fonds de ce compte vers le portefeuille de la trésorerie ; il n'a donc pas été supprimé. Veuillez réessayer.",
   },
+  invalidRate: {
+    en: "Rate must be between 0 and 100.",
+    fr: "Le taux doit être compris entre 0 et 100.",
+  },
 } as const;
 
 export type MessageKey = keyof typeof messages;

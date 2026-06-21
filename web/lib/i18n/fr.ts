@@ -865,7 +865,13 @@ export const fr: Record<string, string> = {
   "admin.upload.remove": "Supprimer l'image",
   "admin.upload.maxSize": "Max 5 Mo. JPEG, PNG, WebP ou GIF.",
   "admin.upload.error": "Échec du téléchargement. Réessayez.",
+  "admin.upload.errorInvalidType": "Seuls les fichiers image sont autorisés.",
+  "admin.upload.errorTooLarge": "Le fichier doit faire moins de 5 Mo.",
   "admin.upload.insertImage": "Insérer une image",
+
+  // Paramètres de commission (extra)
+  "admin.settings.errorInvalidRate": "Le taux doit être compris entre 0 et 100.",
+  "admin.settings.walletPlaceholder": "Adresse Solana",
 
   // Champs commission + tuteur dans l'éditeur de cours
   "admin.courses.editor.commissionRate": "Taux de commission tuteur (%)",

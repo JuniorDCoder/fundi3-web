@@ -41,8 +41,7 @@ export function ImageUpload({ value, onChange, folder = "general", label }: Imag
         });
 
         if (!res.ok) {
-          const data = await res.json().catch(() => null);
-          throw new Error(data?.message ?? "Upload failed");
+          throw new Error(t("admin.upload.error", lang));
         }
 
         const data = await res.json();
@@ -59,11 +58,11 @@ export function ImageUpload({ value, onChange, folder = "general", label }: Imag
   function handleFile(file: File | undefined) {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("Only image files are allowed");
+      setError(t("admin.upload.errorInvalidType", lang));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError("File must be under 5MB");
+      setError(t("admin.upload.errorTooLarge", lang));
       return;
     }
     upload(file);
