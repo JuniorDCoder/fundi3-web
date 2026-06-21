@@ -884,6 +884,13 @@ export const fr: Record<string, string> = {
   "admin.wallet.title": "Portefeuille",
   "admin.wallet.subtitle": "Votre portefeuille Solana pour les transactions de la plateforme.",
 
+  // Admin : accessibilité & divers
+  "admin.nav.openMenu": "Ouvrir le menu",
+  "admin.nav.closeMenu": "Fermer le menu",
+  "admin.login.showPassword": "Afficher le mot de passe",
+  "admin.login.hidePassword": "Masquer le mot de passe",
+  "admin.activity.systemActor": "Système",
+
   // Common
   "common.retry": "Réessayer",
   "common.loading": "Chargement…",

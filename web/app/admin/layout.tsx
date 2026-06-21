@@ -164,7 +164,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   type="button"
                   onClick={() => setDrawerOpen(false)}
                   className="text-[#4A6358] hover:text-[#F5FAF7] transition-colors"
-                  aria-label="Close menu"
+                  aria-label={t("admin.nav.closeMenu", lang)}
                 >
                   <X size={20} />
                 </button>
@@ -204,7 +204,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             type="button"
             onClick={() => setDrawerOpen(true)}
             className="md:hidden text-[#4A6358] hover:text-[#F5FAF7] transition-colors"
-            aria-label="Open menu"
+            aria-label={t("admin.nav.openMenu", lang)}
           >
             <Menu size={22} />
           </button>

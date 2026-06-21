@@ -48,7 +48,7 @@ function snakeToCamel(s: string): string {
 }
 
 function actionDescription(entry: LogEntry, lang: Lang): string {
-  const actor = entry.actorEmail?.split("@")[0] ?? "System";
+  const actor = entry.actorEmail?.split("@")[0] ?? t("admin.activity.systemActor", lang);
   const meta = entry.metadata as Record<string, string>;
   const key = `admin.activity.${snakeToCamel(entry.action)}`;
   return t(key, lang, { actor, title: meta.title ?? "", amount: meta.amountSol ?? "", role: meta.role ?? "" });

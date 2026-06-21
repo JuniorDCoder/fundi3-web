@@ -884,6 +884,13 @@ export const en: Record<string, string> = {
   "admin.wallet.title": "Wallet",
   "admin.wallet.subtitle": "Your Solana wallet for platform transactions.",
 
+  // Admin: accessibility & misc
+  "admin.nav.openMenu": "Open menu",
+  "admin.nav.closeMenu": "Close menu",
+  "admin.login.showPassword": "Show password",
+  "admin.login.hidePassword": "Hide password",
+  "admin.activity.systemActor": "System",
+
   // Common
   "common.retry": "Try again",
   "common.loading": "Loading…",

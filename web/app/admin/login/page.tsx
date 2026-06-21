@@ -105,7 +105,7 @@ function PasswordPanel({ lang, redirect }: { lang: Lang; redirect: string }) {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6358] hover:text-[#F5FAF7] transition-colors"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? t("admin.login.hidePassword", lang) : t("admin.login.showPassword", lang)}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
